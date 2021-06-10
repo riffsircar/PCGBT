@@ -40,11 +40,180 @@ def sample_pattern(p):
 
 def sample_pattern_groups(pats):
 	levels = []
-	for i, chunk_pat in enumerate(chunk_pats):
-		if chunk_pat in pats:
-			levels.append(i)
+	for key in chunk_pats:
+		chunk_pat = chunk_pats[key]
+		for pat in pats:
+			for cp in chunk_pat:
+				if cp.startswith(pat):
+					levels.append(key)
 	level = random.choice(levels)
 	return chunks[level]
+
+def get_pipe_levels():
+	levels = []
+	for pat in patterns:
+		if pat == 'VP' or pat == 'GP':
+			levels.extend(patterns[pat])
+	return levels
+
+class PathsPipesSegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="Paths Pipes")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		#level = chunks[11]
+		print('Sampling PP')
+		level = sample_pattern_groups(['VP','P','RR'])
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
+class StairsEnemiesSegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="Stairs Enemies")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		#level = chunks[11]
+		print('Sampling SE')
+		level = sample_pattern_groups(['E','S'])
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
+class DoPathPipe(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="Do Path Pipe")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='pp_prob',access=common.Access.READ)
+
+	def update(self):
+		levels = []
+		#level = chunks[11]
+		#self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		#self.blackboard.x += 1
+		if random.random() < self.blackboard.pp_prob:
+			print('doing pp')
+			return common.Status.SUCCESS
+		print('doing se')
+		return common.Status.FAILURE
+
+class InitSegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="init")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		level = sample_pattern_groups(['I'])
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
+class StairUpSegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="Stair up")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		level = chunks[11]
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
+class StairValleySegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="Stair Valley")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		level = chunks[9]
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
+class PipeValleySegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="Stair up")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		level = chunks[2]
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
+class RiskRewardSegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="RR")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		level = chunks[7]
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
+class EnemyWithPathsSegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="EWP")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		level = chunks[1]
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
+class EnemyHordeSegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="EH")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		level = chunks[7]
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
 
 
 class GapSegment(behaviour.Behaviour):

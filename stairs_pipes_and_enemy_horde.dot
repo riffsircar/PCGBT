@@ -1,0 +1,25 @@
+digraph pastafarianism {
+ordering=out;
+graph [fontname="times-roman"];
+node [fontname="times-roman"];
+edge [fontname="times-roman"];
+"Stairs Pipes and Enemy Horde" [fillcolor=orange, fontcolor=black, fontsize=9, label="Stairs Pipes and Enemy Horde", shape=box, style=filled];
+"Stairs and Pipes" [fillcolor=orange, fontcolor=black, fontsize=9, label="Stairs and Pipes", shape=box, style=filled];
+"Stairs Pipes and Enemy Horde" -> "Stairs and Pipes";
+Stairs [fillcolor=orange, fontcolor=black, fontsize=9, label=Stairs, shape=box, style=filled];
+"Stairs and Pipes" -> Stairs;
+"Stair Up" [fillcolor=gray, fontcolor=black, fontsize=9, label="Stair Up", shape=ellipse, style=filled];
+Stairs -> "Stair Up";
+"Stair Valley" [fillcolor=gray, fontcolor=black, fontsize=9, label="Stair Valley", shape=ellipse, style=filled];
+Stairs -> "Stair Valley";
+Pipes [fillcolor=orange, fontcolor=black, fontsize=9, label=Pipes, shape=box, style=filled];
+"Stairs and Pipes" -> Pipes;
+"Pipe Valley" [fillcolor=gray, fontcolor=black, fontsize=9, label="Pipe Valley", shape=ellipse, style=filled];
+Pipes -> "Pipe Valley";
+"Pipe Valley*" [fillcolor=gray, fontcolor=black, fontsize=9, label="Pipe Valley*", shape=ellipse, style=filled];
+Pipes -> "Pipe Valley*";
+"Pipe Valley**" [fillcolor=gray, fontcolor=black, fontsize=9, label="Pipe Valley**", shape=ellipse, style=filled];
+Pipes -> "Pipe Valley**";
+"Enemy Horde" [fillcolor=gray, fontcolor=black, fontsize=9, label="Enemy Horde", shape=ellipse, style=filled];
+"Stairs Pipes and Enemy Horde" -> "Enemy Horde";
+}

@@ -1,0 +1,13 @@
+digraph pastafarianism {
+ordering=out;
+graph [fontname="times-roman"];
+node [fontname="times-roman"];
+edge [fontname="times-roman"];
+Pipes [fillcolor=orange, fontcolor=black, fontsize=9, label=Pipes, shape=box, style=filled];
+"Pipe Valley" [fillcolor=gray, fontcolor=black, fontsize=9, label="Pipe Valley", shape=ellipse, style=filled];
+Pipes -> "Pipe Valley";
+"Pipe Valley*" [fillcolor=gray, fontcolor=black, fontsize=9, label="Pipe Valley*", shape=ellipse, style=filled];
+Pipes -> "Pipe Valley*";
+"Pipe Valley**" [fillcolor=gray, fontcolor=black, fontsize=9, label="Pipe Valley**", shape=ellipse, style=filled];
+Pipes -> "Pipe Valley**";
+}

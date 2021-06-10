@@ -171,17 +171,99 @@ def create_root_m11():
 	root.add_child(stairs_and_end)
 	return root
 
-def create_root_generative():
-	root = py_trees.composite.Sequence('Stairs')
+def create_stairs():
+	root = py_trees.composites.Sequence('Stairs')
+	stairup = StairUpSegment('Stair Up')
+	stairvalley = StairValleySegment('Stair Valley')
+	root.add_child(stairup)
+	root.add_child(stairvalley)
+	return root
 
+def create_pipes():
+	root = py_trees.composites.Sequence('Pipes')
+	pv1 = PipeValleySegment('Pipe Valley')
+	pv2 = PipeValleySegment('Pipe Valley')
+	pv3 = PipeValleySegment('Pipe Valley')
+	root.add_child(pv1)
+	root.add_child(pv2)
+	root.add_child(pv3)
+	return root
+
+def create_stairs_pipes():
+	root = py_trees.composites.Sequence('Stairs and Pipes')
+	stairs = create_stairs()
+	pipes = create_pipes()
+	root.add_child(stairs)
+	root.add_child(pipes)
+	return root
+
+def create_stairs_pipes_enemies():
+	root = py_trees.composites.Sequence('Stairs Pipes and Enemy Horde')
+	sp = create_stairs_pipes()
+	eh = EnemyHordeSegment('Enemy Horde')
+	root.add_child(sp)
+	root.add_child(eh)
+	return root
+
+def multi_path():
+	root = py_trees.composites.Sequence('Multiple Paths')
+	rr = RiskRewardSegment('Risk Reward')
+	ewp = EnemyWithPathsSegment('Enemy with Paths')
+	root.add_child(rr)
+	root.add_child(ewp)
+	return root
+
+def mp_stairs_pipes():
+	root = py_trees.composites.Sequence('Paths Stairs and Pipes')
+	mp = multi_path()
+	sp = create_stairs_pipes()
+	root.add_child(mp)
+	root.add_child(sp)
+	return root
+
+def select_pp_se():
+	root = py_trees.composites.Selector('PP or SE')
+	check_pp = py_trees.composites.Sequence('Check PP')
+	do_pp = DoPathPipe('Do Path-Pipe?')
+	pp1 = PathsPipesSegment('Paths and Pipes')
+	pp2 = PathsPipesSegment('Paths and Pipes')
+	se = py_trees.composites.Sequence('SE')
+	se1 = StairsEnemiesSegment('Stairs and Enemies')
+	se2 = StairsEnemiesSegment('Stairs and Enemies')
+	check_pp.add_child(do_pp)
+	check_pp.add_child(pp1)
+	check_pp.add_child(pp2)
+	se.add_child(se1)
+	se.add_child(se2)
+	root.add_child(check_pp)
+	root.add_child(se)
+	return root
+
+def select_gap_valley():
+	root = py_trees.composites.Selector('G or V')
+	return root
+
+def create_root_generator():
+	root = py_trees.composites.Sequence('Level')
+	init = InitSegment('Initial')
+	pp_se = select_pp_se()
+	root.add_child(init)
+	root.add_child(pp_se)
+	gv = select_gap_valley()
+	root.add_child(gv)
+	return root
 
 if __name__ == '__main__':
-	root = create_root_m11()
+	# root = create_root_m11()
+	#root = create_stairs_pipes_enemies()
+	root = create_root_generator()
 	bt = py_trees.trees.BehaviourTree(root)
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='pp_prob',access=py_trees.common.Access.WRITE)
+	blackboard.pp_prob = 0.5
 	blackboard.x = 0
 	blackboard.y = 0
 	blackboard.level = {}
@@ -189,7 +271,7 @@ if __name__ == '__main__':
 	root.tick_once()
 	#print(blackboard)
 	#print(LEVEL)
-	level_to_image(LEVEL)
-	with open('level.json','w') as f:
-		json.dump(LEVEL,f)
+	level_to_image(blackboard.level)
+	#with open('level.json','w') as f:
+	#	json.dump(LEVEL,f)
 	py_trees.display.render_dot_tree(root)

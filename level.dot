@@ -1,0 +1,27 @@
+digraph pastafarianism {
+ordering=out;
+graph [fontname="times-roman"];
+node [fontname="times-roman"];
+edge [fontname="times-roman"];
+Level [fillcolor=orange, fontcolor=black, fontsize=9, label=Level, shape=box, style=filled];
+Initial [fillcolor=gray, fontcolor=black, fontsize=9, label=Initial, shape=ellipse, style=filled];
+Level -> Initial;
+"PP or SE" [fillcolor=cyan, fontcolor=black, fontsize=9, label="PP or SE", shape=octagon, style=filled];
+Level -> "PP or SE";
+"Check PP" [fillcolor=orange, fontcolor=black, fontsize=9, label="Check PP", shape=box, style=filled];
+"PP or SE" -> "Check PP";
+"Do Path-Pipe?" [fillcolor=gray, fontcolor=black, fontsize=9, label="Do Path-Pipe?", shape=ellipse, style=filled];
+"Check PP" -> "Do Path-Pipe?";
+"Paths and Pipes" [fillcolor=gray, fontcolor=black, fontsize=9, label="Paths and Pipes", shape=ellipse, style=filled];
+"Check PP" -> "Paths and Pipes";
+"Paths and Pipes*" [fillcolor=gray, fontcolor=black, fontsize=9, label="Paths and Pipes*", shape=ellipse, style=filled];
+"Check PP" -> "Paths and Pipes*";
+SE [fillcolor=orange, fontcolor=black, fontsize=9, label=SE, shape=box, style=filled];
+"PP or SE" -> SE;
+"Stairs and Enemies" [fillcolor=gray, fontcolor=black, fontsize=9, label="Stairs and Enemies", shape=ellipse, style=filled];
+SE -> "Stairs and Enemies";
+"Stairs and Enemies*" [fillcolor=gray, fontcolor=black, fontsize=9, label="Stairs and Enemies*", shape=ellipse, style=filled];
+SE -> "Stairs and Enemies*";
+"G or V" [fillcolor=cyan, fontcolor=black, fontsize=9, label="G or V", shape=octagon, style=filled];
+Level -> "G or V";
+}
