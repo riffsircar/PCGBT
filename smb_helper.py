@@ -3,6 +3,16 @@ from smb_library import *
 import random
 from PIL import Image
 
+dp = {
+	'E': ['E1','E2','E3','E4','R','GE','RR'],
+	'G': ['G1','GM','GP','GE','GV'],
+	'V': ['V','VP','VN','VE','VR','GV'],
+	'P': ['P2','P3','RR'],
+	'S': ['SU','SD','SVN','SVE','SVG'],
+	'|': ['VP','GP'],
+	'I': ['I']
+}
+
 images = {
     # TODO: Get T, D, M tiles from Icarus
     "E": Image.open('tiles/E.png'),
@@ -38,15 +48,24 @@ def sample_pattern(p):
 	level = random.choice(levels)
 	return chunks[level]
 
-def sample_pattern_groups(pats):
+def sample_pattern_groups(pats,exact=False):
 	levels = []
 	for key in chunk_pats:
 		chunk_pat = chunk_pats[key]
 		for pat in pats:
+			if not exact:
+				if any(p in chunk_pat for p in dp[pat]):
+					levels.append(key)
+			else:
+				if all(p in chunk_pat for p in dp[pat]):
+					levels.append(key)
+			"""
 			for cp in chunk_pat:
 				if cp.startswith(pat):
 					levels.append(key)
+			"""
 	level = random.choice(levels)
+	print(chunk_pats[level])
 	return chunks[level]
 
 def get_pipe_levels():
@@ -68,7 +87,7 @@ class PathsPipesSegment(behaviour.Behaviour):
 		levels = []
 		#level = chunks[11]
 		print('Sampling PP')
-		level = sample_pattern_groups(['VP','P','RR'])
+		level = sample_pattern_groups(['P','|'])
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return common.Status.SUCCESS
@@ -101,14 +120,47 @@ class DoPathPipe(behaviour.Behaviour):
 
 	def update(self):
 		levels = []
-		#level = chunks[11]
-		#self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		#self.blackboard.x += 1
 		if random.random() < self.blackboard.pp_prob:
 			print('doing pp')
 			return common.Status.SUCCESS
 		print('doing se')
 		return common.Status.FAILURE
+
+class ValleySegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="Valley")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		#level = chunks[11]
+		print('Sampling Valley')
+		level = sample_pattern_groups(['V'])
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
+class DoGap(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="Do Gap")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='gap_prob',access=common.Access.READ)
+
+	def update(self):
+		levels = []
+		if random.random() < self.blackboard.gap_prob:
+			print('doing gap')
+			return common.Status.SUCCESS
+		print('doing val')
+		return common.Status.FAILURE
+
+
 
 class InitSegment(behaviour.Behaviour):
 	def __init__(self,name):
@@ -226,7 +278,7 @@ class GapSegment(behaviour.Behaviour):
 
 	def update(self):
 		levels = []
-		level = sample_pattern('G')
-		self.blackboard.x += 1
+		level = sample_pattern_groups(['G'])
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
 		return common.Status.SUCCESS

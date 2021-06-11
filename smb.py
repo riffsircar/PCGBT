@@ -241,6 +241,20 @@ def select_pp_se():
 
 def select_gap_valley():
 	root = py_trees.composites.Selector('G or V')
+	check_gap = py_trees.composites.Sequence('Check Gap')
+	do_gap = DoGap('Do Gap?')
+	g1 = GapSegment('Gaps')
+	g2 = GapSegment('Gaps')
+	val = py_trees.composites.Sequence('Valleys')
+	val1 = ValleySegment('Valleys')
+	val2 = ValleySegment('Valleys')
+	check_gap.add_child(do_gap)
+	check_gap.add_child(g1)
+	check_gap.add_child(g2)
+	val.add_child(val1)
+	val.add_child(val2)
+	root.add_child(check_gap)
+	root.add_child(val)
 	return root
 
 def create_root_generator():
@@ -263,7 +277,9 @@ if __name__ == '__main__':
 	blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='pp_prob',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='gap_prob',access=py_trees.common.Access.WRITE)
 	blackboard.pp_prob = 0.5
+	blackboard.gap_prob = 0.5
 	blackboard.x = 0
 	blackboard.y = 0
 	blackboard.level = {}

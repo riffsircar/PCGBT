@@ -24,4 +24,18 @@ SE -> "Stairs and Enemies";
 SE -> "Stairs and Enemies*";
 "G or V" [fillcolor=cyan, fontcolor=black, fontsize=9, label="G or V", shape=octagon, style=filled];
 Level -> "G or V";
+"Check Gap" [fillcolor=orange, fontcolor=black, fontsize=9, label="Check Gap", shape=box, style=filled];
+"G or V" -> "Check Gap";
+"Do Gap?" [fillcolor=gray, fontcolor=black, fontsize=9, label="Do Gap?", shape=ellipse, style=filled];
+"Check Gap" -> "Do Gap?";
+Gaps [fillcolor=gray, fontcolor=black, fontsize=9, label=Gaps, shape=ellipse, style=filled];
+"Check Gap" -> Gaps;
+"Gaps*" [fillcolor=gray, fontcolor=black, fontsize=9, label="Gaps*", shape=ellipse, style=filled];
+"Check Gap" -> "Gaps*";
+Valleys [fillcolor=orange, fontcolor=black, fontsize=9, label=Valleys, shape=box, style=filled];
+"G or V" -> Valleys;
+"Valleys*" [fillcolor=gray, fontcolor=black, fontsize=9, label="Valleys*", shape=ellipse, style=filled];
+Valleys -> "Valleys*";
+"Valleys**" [fillcolor=gray, fontcolor=black, fontsize=9, label="Valleys**", shape=ellipse, style=filled];
+Valleys -> "Valleys**";
 }
