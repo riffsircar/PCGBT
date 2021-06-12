@@ -31,19 +31,75 @@ def sample_dir(d):
 	level = random.choice(levels)
 	return chunks[level]
 
+class DoHorizontal(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="Do Gap")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='h_prob',access=common.Access.READ)
+
+	def update(self):
+		levels = []
+		if random.random() < self.blackboard.h_prob:
+			print('doing horizontal')
+			return common.Status.SUCCESS
+		print('doing vertical')
+		return common.Status.FAILURE
+
+class DoUpward(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="Do Gap")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='up_prob',access=common.Access.READ)
+
+	def update(self):
+		levels = []
+		if random.random() < self.blackboard.up_prob:
+			print('doing upward')
+			return common.Status.SUCCESS
+		print('doing downward')
+		return common.Status.FAILURE
+
+
+class HorizontalSection(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="H")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='num_nodes',access=common.Access.READ)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		nn = self.blackboard.num_nodes
+		for _ in range(nn):
+			level = sample_dir('LR')
+			self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+			self.blackboard.x += 1
+		return common.Status.SUCCESS
+
 class LeftRightSegment(behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name="LR")
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='num_nodes',access=common.Access.READ)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
 
 	def update(self):
 		levels = []
-		level = sample_dir('LR')
-		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		self.blackboard.x += 1
+		nn = self.blackboard.num_nodes
+		for _ in range(nn):
+			level = sample_dir('LR')
+			self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+			self.blackboard.x += 1
 		return common.Status.SUCCESS
 
 class UpLeftSegment(behaviour.Behaviour):
@@ -61,6 +117,21 @@ class UpLeftSegment(behaviour.Behaviour):
 		self.blackboard.y -= 1
 		return common.Status.SUCCESS
 
+class DownLeftSegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="DL")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		level = sample_dir('DL')
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.y += 1
+		return common.Status.SUCCESS
+
 class DownRightSegment(behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
@@ -76,6 +147,21 @@ class DownRightSegment(behaviour.Behaviour):
 		self.blackboard.x += 1
 		return common.Status.SUCCESS
 
+class UpRightSegment(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name="UR")
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+
+	def update(self):
+		levels = []
+		level = sample_dir('UR')
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
 class UpwardSegment(behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
@@ -83,12 +169,15 @@ class UpwardSegment(behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='num_nodes',access=common.Access.READ)
 
 	def update(self):
 		levels = []
-		level = sample_dir('UD')
-		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		self.blackboard.y -= 1
+		nn = self.blackboard.num_nodes
+		for _ in range(nn):
+			level = sample_dir('UD')
+			self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+			self.blackboard.y -= 1
 		return common.Status.SUCCESS
 
 class DownwardSegment(behaviour.Behaviour):
