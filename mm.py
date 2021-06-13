@@ -381,10 +381,14 @@ if __name__ == '__main__':
 	blackboard.register_key(key='h_prob',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='up_prob',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='prev',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
 	blackboard.h_prob = 0.5
 	blackboard.up_prob = 0.5
 	blackboard.x = 0
 	blackboard.y = 0
+	blackboard.prev = None
+	blackboard.dr = None
 	blackboard.level = {}
 	#print(blackboard)
 	root.tick_once()
