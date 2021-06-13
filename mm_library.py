@@ -4,6 +4,7 @@ chunks = {}
 dirs = {}
 chunk_dir = {}
 
+
 folder = 'mm_chunks_all/'
 for file_name in os.listdir(folder):
 	level = open(folder + file_name,'r').read().splitlines()

@@ -388,7 +388,7 @@ if __name__ == '__main__':
 	blackboard.x = 0
 	blackboard.y = 0
 	blackboard.prev = None
-	blackboard.dr = None
+	blackboard.dr = 'LR'
 	blackboard.level = {}
 	#print(blackboard)
 	root.tick_once()

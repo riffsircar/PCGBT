@@ -1,5 +1,6 @@
 import sys, os, random
 from PIL import Image
+import met_library
 
 images = {
    "B":Image.open('tiles/Z_B.png'), # block
@@ -13,10 +14,37 @@ images = {
    "W":Image.open('tiles/Z_W.png')  # wall
 }
 
+met_images = {
+    "#":Image.open('tiles/Met_X.png'),  # solid
+    "(":Image.open('tiles/0.png'),  # beam around door (ignore using background)
+    ")":Image.open('tiles/0.png'),  # beam around door (ignore using background)
+    "+":Image.open('tiles/Met_+.png'),  # powerup
+    "-":Image.open('tiles/0.png'),   # background
+    "B":Image.open('tiles/Met_B.png'),  # breakable
+    "D":Image.open('tiles/Met_D.png'),  # door
+    "E":Image.open('tiles/Met_E.png'),  # enemy
+    "P":Image.open('tiles/0.png'),   # path
+    "[":Image.open('tiles/Met_[.png'),  # ??
+    "]":Image.open('tiles/Met_].png'),  # ??
+    "^":Image.open('tiles/Met_^2.png'),  # lava
+    "v":Image.open('tiles/0.png')  # ??
+}
+
 def sample_dir(d):
 	levels = dirs[d]
 	level = random.choice(levels)
 	return chunks[level]
+
+def sample_met(d):
+	if d == 'DR':
+		d = 'UDR'
+	if d == 'DLR':
+		d = 'UDLR'
+	if d == 'U':
+		d = 'UD'
+	levels = met_library.dirs[d]
+	level = random.choice(levels)
+	return met_library.chunks[level]
 
 def get_door_label(room):
     label = ''
