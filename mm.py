@@ -370,9 +370,9 @@ def create_root_generator():
 
 
 if __name__ == '__main__':
-	#root = create_root_m11()
+	root = create_root_m11()
 	#root = create_stairs_pipes_enemies()
-	root = create_root_generator()
+	#root = create_root_generator()
 	bt = py_trees.trees.BehaviourTree(root)
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)

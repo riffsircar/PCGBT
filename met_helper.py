@@ -18,3 +18,14 @@ images = {
     "^":Image.open('tiles/Met_^2.png'),  # lava
     "v":Image.open('tiles/0.png')  # ??
 }
+
+def sample_met(d,dummy1,dummy2):
+	if d == 'DR':
+		d = 'UDR'
+	if d == 'DLR':
+		d = 'UDLR'
+	if d == 'U':
+		d = 'UD'
+	levels = dirs[d]
+	level = random.choice(levels)
+	return chunks[level]
