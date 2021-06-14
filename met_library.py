@@ -5,7 +5,7 @@ dirs = {}
 chunk_dir = {}
 
 folder = 'met_chunks_all/'
-for file_name in os.listdir(folder):
+for i, file_name in enumerate(os.listdir(folder)):
 	level = open(folder + file_name,'r').read().splitlines()
 	sub1 = file_name[file_name.index('_')+1:]
 	sub2 = sub1[sub1.index('_')+1:]
@@ -14,9 +14,9 @@ for file_name in os.listdir(folder):
 	d = sub3[sub3.index('_')+1:sub3.index('.')]
 	if d not in dirs:
 		dirs[d] = []
-	dirs[d].append(idx)
-	chunks[idx] = level
-	chunk_dir[idx] = d
+	dirs[d].append(i)
+	chunks[i] = level
+	chunk_dir[i] = d
 
 
 print(dirs.keys())

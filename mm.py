@@ -33,9 +33,13 @@ class LR1(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[12] if verbatim else sample_dir('LR')
+		level = chunks[12] if verbatim else sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'LR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -47,9 +51,13 @@ class LR2(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[13] if verbatim else sample_dir('LR')
+		level = chunks[13] if verbatim else sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'LR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -61,9 +69,13 @@ class LR3(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
+
 	def update(self):
-		level = chunks[14] if verbatim else sample_dir('LR')
+		level = chunks[14] if verbatim else sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'LR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -75,9 +87,13 @@ class LR4(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[15] if verbatim else sample_dir('LR')
+		level = chunks[15] if verbatim else sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'LR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -89,9 +105,13 @@ class LR6(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[17] if verbatim else sample_dir('LR')
+		level = chunks[17] if verbatim else sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'LR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -103,9 +123,13 @@ class UL1(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[18] if verbatim else sample_dir('UL')
+		level = chunks[18] if verbatim else sample_dir('UL',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'UL'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.y -= 1
 		return py_trees.common.Status.SUCCESS
@@ -117,9 +141,13 @@ class UD1(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
+
 	def update(self):
-		level = chunks[11] if verbatim else sample_dir('UD')
+		level = chunks[11] if verbatim else sample_dir('UD',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'UD_U'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.y -= 1
 		return py_trees.common.Status.SUCCESS
@@ -131,9 +159,13 @@ class UD2(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[4] if verbatim else sample_dir('UD')
+		level = chunks[4] if verbatim else sample_dir('UD',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'UD_U'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.y -= 1
 		return py_trees.common.Status.SUCCESS
@@ -145,10 +177,14 @@ class DR1(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[5] if verbatim else sample_dir('DR')
+		level = chunks[5] if verbatim else sample_dir('DR',self.blackboard.prev,self.blackboard.dr)
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.prev = level
+		self.blackboard.dr = 'DR'
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
 
@@ -159,9 +195,13 @@ class DR2(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[0] if verbatim else sample_dir('DR')
+		level = chunks[0] if verbatim else sample_dir('DR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'DR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -173,9 +213,13 @@ class LR7(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[6] if verbatim else sample_dir('LR')
+		level = chunks[6] if verbatim else sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'LR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -187,9 +231,13 @@ class LR9(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[9] if verbatim else sample_dir('LR')
+		level = chunks[9] if verbatim else sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'LR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -201,9 +249,13 @@ class LR10(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
+
 	def update(self):
-		level = chunks[1] if verbatim else sample_dir('LR')
+		level = chunks[1] if verbatim else sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'LR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -215,9 +267,13 @@ class LR11(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[2] if verbatim else sample_dir('LR')
+		level = chunks[2] if verbatim else sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'LR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -229,9 +285,13 @@ class LR12(py_trees.behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		
 	def update(self):
-		level = chunks[3] if verbatim else sample_dir('LR')
+		level = chunks[3] if verbatim else sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+		self.blackboard.prev = level
+		self.blackboard.dr = 'LR'
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return py_trees.common.Status.SUCCESS
@@ -297,11 +357,11 @@ def upward_section():
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
 	root = py_trees.composites.Sequence('Upward')
-	ul = UpLeftSegment('UL')
+	ul = UpLeftSegment('UpLeft')
 	blackboard.num_nodes = random.randint(2,4)
 	print('Upward NN: ', blackboard.num_nodes)
-	ud = UpwardSegment('UD')
-	dr = DownRightSegment('DR')
+	ud = UpwardSegment('UpDown')
+	dr = DownRightSegment('DownRight')
 	root.add_child(ul)
 	root.add_child(ud)
 	root.add_child(dr)
@@ -312,11 +372,11 @@ def downward_section():
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
 	root = py_trees.composites.Sequence('Downward')
-	dl = DownLeftSegment('DL')
+	dl = DownLeftSegment('DownLeft')
 	blackboard.num_nodes = random.randint(2,4)
 	print('Downward NN: ', blackboard.num_nodes)
-	ud = DownwardSegment('UD')
-	ur = UpRightSegment('UR')
+	ud = DownwardSegment('UpDown')
+	ur = UpRightSegment('UpRight')
 	root.add_child(dl)
 	root.add_child(ud)
 	root.add_child(ur)
@@ -370,9 +430,9 @@ def create_root_generator():
 
 
 if __name__ == '__main__':
-	root = create_root_m11()
+	#root = create_root_m11()
 	#root = create_stairs_pipes_enemies()
-	#root = create_root_generator()
+	root = create_root_generator()
 	bt = py_trees.trees.BehaviourTree(root)
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)

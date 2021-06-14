@@ -5,7 +5,7 @@ import mm_library
 import met_library
 import py_trees
 
-GAME = 'met'
+GAME = 'mm'
 
 mm_images = {
 	"#":Image.open('tiles/MM_X2.png'),
@@ -324,11 +324,11 @@ def upward_section():
 	bbl = blackboard.Client()
 	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
 	root = composites.Sequence('Upward')
-	ul = UpLeftSegment('UL')
+	ul = UpLeftSegment('UpLeft')
 	bbl.num_nodes = random.randint(2,4)
 	print('Upward NN: ', bbl.num_nodes)
-	ud = UpwardSegment('UD')
-	dr = DownRightSegment('DR')
+	ud = UpwardSegment('UpDown')
+	dr = DownRightSegment('DownRight')
 	root.add_child(ul)
 	root.add_child(ud)
 	root.add_child(dr)
@@ -339,11 +339,11 @@ def downward_section():
 	bbl = blackboard.Client()
 	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
 	root = composites.Sequence('Downward')
-	dl = DownLeftSegment('DL')
+	dl = DownLeftSegment('DownLeft')
 	bbl.num_nodes = random.randint(2,4)
 	print('Downward NN: ', bbl.num_nodes)
-	ud = DownwardSegment('UD')
-	ur = UpRightSegment('UR')
+	ud = DownwardSegment('UpDown')
+	ur = UpRightSegment('UpRight')
 	root.add_child(dl)
 	root.add_child(ud)
 	root.add_child(ur)
@@ -374,7 +374,7 @@ def select_hv():
 	return root
 
 def create_root_generator():
-	root = composites.Sequence('Level')
+	root = composites.Sequence('Generic Level')
 	bbl = blackboard.Client()
 	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
 	hv = select_hv()

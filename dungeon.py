@@ -3,7 +3,7 @@ from PIL import Image
 import random, sys
 from dungeon_helper import *
 
-dims = (15,16)
+dims = (11,16)
 
 CLOSED, OPEN, DOOR = 'closed','open', 'door'
 NORTH, SOUTH, EAST, WEST = 'north','south','east','west'
@@ -189,7 +189,7 @@ if __name__=='__main__':
 	blackboard.register_key(key='started',access=common.Access.WRITE)
 	blackboard.started = False
 	blackboard.generated = 0
-	blackboard.n = random.randint(10,25)
+	blackboard.n = random.randint(10,15)
 	blackboard.cell = (0,0)
 	blackboard.layout = {}
 	start = is_start()
@@ -280,11 +280,12 @@ if __name__=='__main__':
 		if cell['east'] in ['open','door']:
 			label += 'R'
 
-		level = sample_met(label)
+		#level = sample_met(label)
+		level = sample_dir(label)
 		img = Image.new('RGB',(16*16,dims[0]*16))
 		for row, seq in enumerate(level):
 			for col, tile in enumerate(seq):
-				img.paste(met_images[tile],(col*16,row*16))
+				img.paste(images[tile],(col*16,row*16))
 		x_pos, y_pos, x_del, y_del = (x*256)+x_adj, (y*dims[0]*16)+y_adj, 16*16, dims[0]*16
 		layout_img.paste(img, (x_pos,y_pos))
-		layout_img.save('met.png')
+		layout_img.save('dung.png')
