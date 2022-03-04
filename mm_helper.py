@@ -26,6 +26,26 @@ images = {
 
 verbatim = True
 
+def level_to_image(level):
+	width, height = 0, 0
+	xs = [x for (x,y) in level]
+	ys = [y for (x,y) in level]
+	min_y = min(ys)
+	ys_adj = [y+abs(min_y) for y in ys]
+	width, height = max(xs), max(ys_adj)
+	level_img = Image.new('RGB',((width+1)*(16*16), (height+1)*15*16))
+	print(level_img.size)
+	for x,y in level:
+		print(x,y)
+		lev = level[(x,y)]
+		img = Image.new('RGB',(16*16,15*16))
+		for row, seq in enumerate(lev):
+			for col, tile in enumerate(seq):
+				img.paste(images[tile],(col*16,row*16))
+		y_adj = y+abs(min_y)
+		level_img.paste(img,(x*256,y_adj*240))
+	level_img.save('test.png')
+
 def compare(s1,s2,vert=False):
 	print('in compare')
 	for a,b in zip(s1,s2):

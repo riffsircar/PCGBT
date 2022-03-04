@@ -3,7 +3,7 @@ from PIL import Image
 import random, sys
 from dungeon_helper import *
 
-dims = (11,16)
+dims = (15,16)
 
 CLOSED, OPEN, DOOR = 'closed','open', 'door'
 NORTH, SOUTH, EAST, WEST = 'north','south','east','west'
@@ -209,7 +209,7 @@ if __name__=='__main__':
 	y_hi = max(cells, key=lambda x: x[1])[1]
 	width, height = abs(x_lo - x_hi)+1, abs(y_hi - y_lo)+1
 	x_adj, y_adj = abs(x_lo * 256 - 0), abs((y_lo * dims[0] * 16) - 0)
-	#print(width, height)
+	print(width, height)
 	#print(x_adj, y_adj)
 	layout_img = Image.new('RGB',(width*256, height*(dims[0]*16)))
 
@@ -280,12 +280,12 @@ if __name__=='__main__':
 		if cell['east'] in ['open','door']:
 			label += 'R'
 
-		#level = sample_met(label)
-		level = sample_dir(label)
+		level = sample_met(label)
+		#level = sample_dir(label)
 		img = Image.new('RGB',(16*16,dims[0]*16))
 		for row, seq in enumerate(level):
 			for col, tile in enumerate(seq):
-				img.paste(images[tile],(col*16,row*16))
+				img.paste(met_images[tile],(col*16,row*16))
 		x_pos, y_pos, x_del, y_del = (x*256)+x_adj, (y*dims[0]*16)+y_adj, 16*16, dims[0]*16
 		layout_img.paste(img, (x_pos,y_pos))
-		layout_img.save('dung.png')
+		layout_img.save('dung_met.png')

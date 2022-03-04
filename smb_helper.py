@@ -39,6 +39,23 @@ images = {
 	"b": Image.open('tiles/bb.png')
 }
 
+def level_to_image(level):
+	width, height = 0, 0
+	xs = [x for (x,y) in level]
+	ys = [y for (x,y) in level]
+	width, height = max(xs), max(ys)
+	level_img = Image.new('RGB',((width+1)*(16*16), 15*16))
+	print(level_img.size)
+	for x,y in level:
+		print(x,y)
+		lev = level[(x,y)]
+		img = Image.new('RGB',(16*16,15*16))
+		for row, seq in enumerate(lev):
+			for col, tile in enumerate(seq):
+				img.paste(images[tile],(col*16,row*16))
+		level_img.paste(img,(x*256,y*240))
+	level_img.save('test.png')
+
 def sample_pattern(p):
 	levels = []
 	for pat in patterns:
@@ -75,6 +92,43 @@ def get_pipe_levels():
 			levels.extend(patterns[pat])
 	return levels
 
+class MarioSegmentNode(behaviour.Behaviour):
+	def __init__(self,name,pattern):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name=name)
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.pattern = pattern
+	
+	def update(self):
+		print('Sampling ' + self.name)
+		level = sample_pattern_groups(self.pattern)
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		self.blackboard.x += 1
+		return common.Status.SUCCESS
+
+class MarioCheckNode(behaviour.Behaviour):
+	def __init__(self,name,node_key):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name=name)
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key=node_key,access=common.Access.READ)
+		self.node_key = node_key
+
+	def update(self):
+		levels = []
+		key_val = self.blackboard.get(self.node_key)
+		#if random.random() < self.blackboard.pp_prob:
+		if random.random() < key_val:
+			print('doing pp')
+			return common.Status.SUCCESS
+		print('doing se')
+		return common.Status.FAILURE
+
+"""
 class PathsPipesSegment(behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
@@ -108,6 +162,7 @@ class StairsEnemiesSegment(behaviour.Behaviour):
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return common.Status.SUCCESS
+
 
 class DoPathPipe(behaviour.Behaviour):
 	def __init__(self,name):
@@ -160,8 +215,6 @@ class DoGap(behaviour.Behaviour):
 		print('doing val')
 		return common.Status.FAILURE
 
-
-
 class InitSegment(behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
@@ -177,97 +230,6 @@ class InitSegment(behaviour.Behaviour):
 		self.blackboard.x += 1
 		return common.Status.SUCCESS
 
-class StairUpSegment(behaviour.Behaviour):
-	def __init__(self,name):
-		super().__init__(name=name)
-		self.blackboard = self.attach_blackboard_client(name="Stair up")
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-
-	def update(self):
-		levels = []
-		level = chunks[11]
-		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		self.blackboard.x += 1
-		return common.Status.SUCCESS
-
-class StairValleySegment(behaviour.Behaviour):
-	def __init__(self,name):
-		super().__init__(name=name)
-		self.blackboard = self.attach_blackboard_client(name="Stair Valley")
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-
-	def update(self):
-		levels = []
-		level = chunks[9]
-		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		self.blackboard.x += 1
-		return common.Status.SUCCESS
-
-class PipeValleySegment(behaviour.Behaviour):
-	def __init__(self,name):
-		super().__init__(name=name)
-		self.blackboard = self.attach_blackboard_client(name="Stair up")
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-
-	def update(self):
-		levels = []
-		level = chunks[2]
-		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		self.blackboard.x += 1
-		return common.Status.SUCCESS
-
-class RiskRewardSegment(behaviour.Behaviour):
-	def __init__(self,name):
-		super().__init__(name=name)
-		self.blackboard = self.attach_blackboard_client(name="RR")
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-
-	def update(self):
-		levels = []
-		level = chunks[7]
-		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		self.blackboard.x += 1
-		return common.Status.SUCCESS
-
-class EnemyWithPathsSegment(behaviour.Behaviour):
-	def __init__(self,name):
-		super().__init__(name=name)
-		self.blackboard = self.attach_blackboard_client(name="EWP")
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-
-	def update(self):
-		levels = []
-		level = chunks[1]
-		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		self.blackboard.x += 1
-		return common.Status.SUCCESS
-
-class EnemyHordeSegment(behaviour.Behaviour):
-	def __init__(self,name):
-		super().__init__(name=name)
-		self.blackboard = self.attach_blackboard_client(name="EH")
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-
-	def update(self):
-		levels = []
-		level = chunks[7]
-		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		self.blackboard.x += 1
-		return common.Status.SUCCESS
-
-
 class GapSegment(behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
@@ -282,3 +244,4 @@ class GapSegment(behaviour.Behaviour):
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		self.blackboard.x += 1
 		return common.Status.SUCCESS
+"""
