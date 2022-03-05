@@ -1,7 +1,6 @@
 import py_trees
 from smb_library import *
 from smb_helper import *
-import json
 
 def select_pp_se():
 	root = py_trees.composites.Selector('PP or SE')

@@ -20,4 +20,4 @@ for file_name in os.listdir(folder):
 	chunk_dir[idx] = d
 
 
-print(dirs.keys())
+#print(dirs.keys())

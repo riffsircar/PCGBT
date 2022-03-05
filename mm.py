@@ -1,18 +1,15 @@
 import py_trees
 from mm_library import *
 from mm_helper import *
-import json
 
 def upward_section():
 	print('Inside upward section')
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
 	root = py_trees.composites.Sequence('Upward')
-	ul = UpLeftSegment('UpLeft')
-	blackboard.num_nodes = random.randint(2,4)
-	print('Upward NN: ', blackboard.num_nodes)
-	ud = UpwardSegment('UpDown')
-	dr = DownRightSegment('DownRight')
+	ul = MegaManSegmentNode('UpLeft','UL')
+	ud = MegaManSection('UpDown','UD_U',random.randint(2,4))
+	dr = MegaManSegmentNode('DownRight','DR')
 	root.add_child(ul)
 	root.add_child(ud)
 	root.add_child(dr)
@@ -23,20 +20,19 @@ def downward_section():
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
 	root = py_trees.composites.Sequence('Downward')
-	dl = DownLeftSegment('DownLeft')
-	blackboard.num_nodes = random.randint(2,4)
-	print('Downward NN: ', blackboard.num_nodes)
-	ud = DownwardSegment('UpDown')
-	ur = UpRightSegment('UpRight')
+	dl = MegaManSegmentNode('DownLeft','DL')
+	ud = MegaManSection('UpDown','UD_D',random.randint(2,4))
+	ur = MegaManSegmentNode('UpRight','UR')
 	root.add_child(dl)
 	root.add_child(ud)
 	root.add_child(ur)
 	return root
 
 def select_ud():
+	print('in ud')
 	root = py_trees.composites.Selector('Vertical')
 	check = py_trees.composites.Sequence('Check')
-	do_up = DoUpward('Do Upward?')
+	do_up = MegaManCheckNode('Do Upward?', 'up_prob')
 	u = upward_section()
 	d = downward_section()
 	check.add_child(do_up)
@@ -46,10 +42,11 @@ def select_ud():
 	return root
 
 def select_hv():
+	print('in hv')
 	root = py_trees.composites.Selector('Horizontal or Vertical')
 	check = py_trees.composites.Sequence('Check')
-	do_h = DoHorizontal('Do Horizontal?')
-	h = HorizontalSection('Horizontal')
+	do_h = MegaManCheckNode('Do Horizontal?', 'h_prob')
+	h = MegaManSection('Horizontal','LR',random.randint(2,4))
 	ud = select_ud()
 	check.add_child(do_h)
 	check.add_child(h)
@@ -58,21 +55,18 @@ def select_hv():
 	return root
 
 def create_root_generator():
-	root = py_trees.composites.Sequence('Level')
+	root = py_trees.composites.Sequence('MM Level')
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
-	blackboard.num_nodes = random.randint(2,4)
-	print('NN: ',blackboard.num_nodes)
-	h1 = HorizontalSection('Init Horizontal')
+	h1 = MegaManSection('Horizontal','LR',random.randint(2,4))
+	print('h1 done')
 	root.add_child(h1)
 	hv = select_hv()
-	blackboard.num_nodes = random.randint(2,4)
-	print('NN: ',blackboard.num_nodes)
-	h2 = HorizontalSection('Middle Horizontal')
+	h2 = MegaManSection('Middle Horizontal','LR',random.randint(2,4))
+	print('h2 done')
 	ud = select_ud()
-	blackboard.num_nodes = random.randint(2,4)
-	print('NN: ',blackboard.num_nodes)
-	h3 = HorizontalSection('Final Horizontal')
+	h3 = MegaManSection('Final Horizontal','LR',random.randint(2,4))
+	print('h3 done')
 	root.add_child(hv)
 	root.add_child(h2)
 	root.add_child(ud)
@@ -81,8 +75,6 @@ def create_root_generator():
 
 
 if __name__ == '__main__':
-	#root = create_root_m11()
-	#root = create_stairs_pipes_enemies()
 	root = create_root_generator()
 	bt = py_trees.trees.BehaviourTree(root)
 	blackboard = py_trees.blackboard.Client()
@@ -91,7 +83,6 @@ if __name__ == '__main__':
 	blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='h_prob',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='up_prob',access=py_trees.common.Access.WRITE)
-	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='prev',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
 	blackboard.h_prob = 0.5
