@@ -1,6 +1,9 @@
+import sys
+sys.path.append('..')
 import py_trees
 from smb_library import *
 from smb_helper import *
+
 
 def select_pp_se():
 	root = py_trees.composites.Selector('PP or SE')
@@ -40,7 +43,6 @@ def select_gap_valley():
 
 def create_root_generator():
 	root = py_trees.composites.Sequence(name='SMB Level')
-	#init = InitSegment('Initial')
 	init = MarioSegmentNode('Initial', ['I'])
 	pp_se = select_pp_se()
 	root.add_child(init)
@@ -50,8 +52,6 @@ def create_root_generator():
 	return root
 
 if __name__ == '__main__':
-	# root = create_root_m11()
-	#root = create_stairs_pipes_enemies()
 	root = create_root_generator()
 	bt = py_trees.trees.BehaviourTree(root)
 	blackboard = py_trees.blackboard.Client()

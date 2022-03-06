@@ -1,3 +1,5 @@
+import sys
+sys.path.append('..')
 from py_trees import *
 from mm_library import *
 import random
@@ -5,23 +7,23 @@ from PIL import Image
 
 
 images = {
-	"#":Image.open('tiles/MM_X2.png'),
-	"*":Image.open('tiles/MM_star.png'),
-	"+":Image.open('tiles/MM_+.png'),
-	"-":Image.open('tiles/-.png'),
-	"B":Image.open('tiles/MM_B2.png'),
-	"C":Image.open('tiles/CMM.png'),
-	"D":Image.open('tiles/DMM.png'),
-	"H":Image.open('tiles/HMM.png'),
-	"L":Image.open('tiles/MM_L.png'),
-	"M":Image.open('tiles/MMM.png'),
-	"P":Image.open('tiles/-.png'),
-	"U":Image.open('tiles/MM_U.png'),
-	"W":Image.open('tiles/MM_w.png'),
-	"l":Image.open('tiles/MM_L.png'),
-	"t":Image.open('tiles/TMM.png'),
-	"w":Image.open('tiles/MM_w.png'),
-	"|":Image.open('tiles/LMM.png')
+	"#":Image.open('../tiles/MM_X2.png'),
+	"*":Image.open('../tiles/MM_star.png'),
+	"+":Image.open('../tiles/MM_+.png'),
+	"-":Image.open('../tiles/-.png'),
+	"B":Image.open('../tiles/MM_B2.png'),
+	"C":Image.open('../tiles/CMM.png'),
+	"D":Image.open('../tiles/DMM.png'),
+	"H":Image.open('../tiles/HMM.png'),
+	"L":Image.open('../tiles/MM_L.png'),
+	"M":Image.open('../tiles/MMM.png'),
+	"P":Image.open('../tiles/-.png'),
+	"U":Image.open('../tiles/MM_U.png'),
+	"W":Image.open('../tiles/MM_w.png'),
+	"l":Image.open('../tiles/MM_L.png'),
+	"t":Image.open('../tiles/TMM.png'),
+	"w":Image.open('../tiles/MM_w.png'),
+	"|":Image.open('../tiles/LMM.png')
 }
 
 def level_to_image(level):

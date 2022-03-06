@@ -1,3 +1,5 @@
+import sys
+sys.path.append('..')
 import py_trees
 from smb_library import *
 from smb_helper import *

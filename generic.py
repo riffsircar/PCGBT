@@ -1,9 +1,8 @@
 from py_trees import *
 from PIL import Image
 import random
-import mm_library
-import met_library
-import py_trees
+from MegaMan import mm_library
+from Metroid import met_library
 
 GAME = 'mm'
 

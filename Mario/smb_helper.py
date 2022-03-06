@@ -1,3 +1,5 @@
+import sys
+sys.path.append('..')
 from py_trees import *
 from smb_library import *
 import random
@@ -15,28 +17,28 @@ dp = {
 
 images = {
     # TODO: Get T, D, M tiles from Icarus
-    "E": Image.open('tiles/E.png'),
-    "H": Image.open('tiles/H.png'),
-    "G": Image.open('tiles/G.png'),
-    "M": Image.open('tiles/M.png'),
-    "o": Image.open('tiles/o.png'),
-    "S": Image.open('tiles/S.png'),
-    "T": Image.open('tiles/T.png'),
-    "?": Image.open('tiles/Q.png'),
-    "Q": Image.open('tiles/Q.png'),
-    "X": Image.open('tiles/X1.png'),
-    "#": Image.open('tiles/X.png'),
-    "-": Image.open('tiles/-.png'),
-    "0": Image.open('tiles/0.png'),
-    "D": Image.open('tiles/D.png'),
-    "<": Image.open('tiles/PTL.png'),
-    ">": Image.open('tiles/PTR.png'),
-    "[": Image.open('tiles/[.png'),
-    "]": Image.open('tiles/].png'),
-    "*": Image.open('tiles/-.png'),
-    "P": Image.open('tiles/P.png'),
-	"B": Image.open('tiles/B.png'),
-	"b": Image.open('tiles/bb.png')
+    "E": Image.open('../tiles/E.png'),
+    "H": Image.open('../tiles/H.png'),
+    "G": Image.open('../tiles/G.png'),
+    "M": Image.open('../tiles/M.png'),
+    "o": Image.open('../tiles/o.png'),
+    "S": Image.open('../tiles/S.png'),
+    "T": Image.open('../tiles/T.png'),
+    "?": Image.open('../tiles/Q.png'),
+    "Q": Image.open('../tiles/Q.png'),
+    "X": Image.open('../tiles/X1.png'),
+    "#": Image.open('../tiles/X.png'),
+    "-": Image.open('../tiles/-.png'),
+    "0": Image.open('../tiles/0.png'),
+    "D": Image.open('../tiles/D.png'),
+    "<": Image.open('../tiles/PTL.png'),
+    ">": Image.open('../tiles/PTR.png'),
+    "[": Image.open('../tiles/[.png'),
+    "]": Image.open('../tiles/].png'),
+    "*": Image.open('../tiles/-.png'),
+    "P": Image.open('../tiles/P.png'),
+	"B": Image.open('../tiles/B.png'),
+	"b": Image.open('../tiles/bb.png')
 }
 
 def level_to_image(level):

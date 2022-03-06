@@ -1,6 +1,8 @@
 from py_trees import *
-import smb
-import smb_helper, mm_helper, met_helper, random
+from Mario import smb_helper
+from MegaMan import mm_helper
+from Metroid import met_helper
+import random
 from PIL import Image
 
 class InitSegment(behaviour.Behaviour):

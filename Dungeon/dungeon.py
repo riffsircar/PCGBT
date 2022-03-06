@@ -1,14 +1,17 @@
+import sys
+sys.path.append('..')
 from py_trees import *
 from PIL import Image
 import random, sys
 from dungeon_helper import *
-
-dims = (15,16)
+from Metroid import *
 
 CLOSED, OPEN, DOOR = 'closed','open', 'door'
 NORTH, SOUTH, EAST, WEST = 'north','south','east','west'
 DIRS = [NORTH, SOUTH, EAST, WEST]
 N = 5
+GAME = 'zelda' # zelda, met
+dims = (15,16) if GAME == 'met' else (11,16)
 
 def neighbor(cell, dr):
 	if dr == NORTH:
@@ -267,6 +270,8 @@ if __name__=='__main__':
 				line += '┘'
 		print(line)
 	layout = blackboard.layout
+	sample = sample_met if GAME == 'metroid' else sample_dir
+	images = met_images if GAME == 'metroid' else zelda_images
 	for key in layout:
 		x, y = key
 		cell = layout[key]
@@ -280,12 +285,11 @@ if __name__=='__main__':
 		if cell['east'] in ['open','door']:
 			label += 'R'
 
-		level = sample_met(label)
-		#level = sample_dir(label)
+		level = sample(label)
 		img = Image.new('RGB',(16*16,dims[0]*16))
 		for row, seq in enumerate(level):
 			for col, tile in enumerate(seq):
-				img.paste(met_images[tile],(col*16,row*16))
+				img.paste(images[tile],(col*16,row*16))
 		x_pos, y_pos, x_del, y_del = (x*256)+x_adj, (y*dims[0]*16)+y_adj, 16*16, dims[0]*16
 		layout_img.paste(img, (x_pos,y_pos))
 		layout_img.save('dung_met.png')

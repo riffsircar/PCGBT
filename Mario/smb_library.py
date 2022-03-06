@@ -1,5 +1,4 @@
-import os, sys
-
+import os
 chunks = {}
 patterns = {}
 chunk_pats = {}
