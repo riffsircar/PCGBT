@@ -3,8 +3,8 @@ import os, sys
 chunks = {}
 dirs = {}
 chunk_dir = {}
-
-folder = 'mm_chunks_all/'
+path = os.path.dirname(__file__)
+folder = path + '/mm_chunks_all/'
 for file_name in os.listdir(folder):
 	level = open(folder + file_name,'r').read().splitlines()
 	sub1 = file_name[file_name.index('_')+1:]

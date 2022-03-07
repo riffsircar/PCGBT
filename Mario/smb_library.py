@@ -2,8 +2,8 @@ import os
 chunks = {}
 patterns = {}
 chunk_pats = {}
-
-folder = 'smb_chunks_all/'
+path = os.path.dirname(__file__)
+folder = path + '/smb_chunks_all/'
 for file_name in os.listdir(folder):
 	level = open(folder + file_name,'r').read().splitlines()
 	idx = file_name[file_name.index('_')+1:]

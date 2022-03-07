@@ -4,7 +4,6 @@ import py_trees
 from smb_library import *
 from smb_helper import *
 
-
 def select_pp_se():
 	root = py_trees.composites.Selector('PP or SE')
 	check_pp = py_trees.composites.Sequence('Check PP')

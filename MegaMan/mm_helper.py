@@ -1,11 +1,13 @@
-import sys
+import sys, os
 sys.path.append('..')
+sys.path.append(os.path.dirname(__file__))
 from py_trees import *
 from mm_library import *
+from tile_images import *
 import random
 from PIL import Image
 
-
+"""
 images = {
 	"#":Image.open('../tiles/MM_X2.png'),
 	"*":Image.open('../tiles/MM_star.png'),
@@ -25,7 +27,7 @@ images = {
 	"w":Image.open('../tiles/MM_w.png'),
 	"|":Image.open('../tiles/LMM.png')
 }
-
+"""
 def level_to_image(level):
 	width, height = 0, 0
 	xs = [x for (x,y) in level]
@@ -41,7 +43,7 @@ def level_to_image(level):
 		img = Image.new('RGB',(16*16,15*16))
 		for row, seq in enumerate(lev):
 			for col, tile in enumerate(seq):
-				img.paste(images[tile],(col*16,row*16))
+				img.paste(mm_images[tile],(col*16,row*16))
 		y_adj = y+abs(min_y)
 		level_img.paste(img,(x*256,y_adj*240))
 	level_img.save('test.png')

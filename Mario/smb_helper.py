@@ -1,7 +1,8 @@
-import sys
-sys.path.append('..')
+import sys, os
+sys.path.append(os.path.dirname(__file__))
 from py_trees import *
 from smb_library import *
+from tile_images import *
 import random
 from PIL import Image
 
@@ -13,32 +14,6 @@ dp = {
 	'S': ['SU','SD','SVN','SVE','SVG'],
 	'|': ['VP','GP'],
 	'I': ['I']
-}
-
-images = {
-    # TODO: Get T, D, M tiles from Icarus
-    "E": Image.open('../tiles/E.png'),
-    "H": Image.open('../tiles/H.png'),
-    "G": Image.open('../tiles/G.png'),
-    "M": Image.open('../tiles/M.png'),
-    "o": Image.open('../tiles/o.png'),
-    "S": Image.open('../tiles/S.png'),
-    "T": Image.open('../tiles/T.png'),
-    "?": Image.open('../tiles/Q.png'),
-    "Q": Image.open('../tiles/Q.png'),
-    "X": Image.open('../tiles/X1.png'),
-    "#": Image.open('../tiles/X.png'),
-    "-": Image.open('../tiles/-.png'),
-    "0": Image.open('../tiles/0.png'),
-    "D": Image.open('../tiles/D.png'),
-    "<": Image.open('../tiles/PTL.png'),
-    ">": Image.open('../tiles/PTR.png'),
-    "[": Image.open('../tiles/[.png'),
-    "]": Image.open('../tiles/].png'),
-    "*": Image.open('../tiles/-.png'),
-    "P": Image.open('../tiles/P.png'),
-	"B": Image.open('../tiles/B.png'),
-	"b": Image.open('../tiles/bb.png')
 }
 
 def level_to_image(level):
@@ -54,7 +29,7 @@ def level_to_image(level):
 		img = Image.new('RGB',(16*16,15*16))
 		for row, seq in enumerate(lev):
 			for col, tile in enumerate(seq):
-				img.paste(images[tile],(col*16,row*16))
+				img.paste(smb_images[tile],(col*16,row*16))
 		level_img.paste(img,(x*256,y*240))
 	level_img.save('test.png')
 
@@ -107,6 +82,7 @@ class MarioSegmentNode(behaviour.Behaviour):
 		print('Sampling ' + self.name)
 		level = sample_pattern_groups(self.pattern)
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		print('Level: ', self.blackboard.level)
 		self.blackboard.x += 1
 		return common.Status.SUCCESS
 

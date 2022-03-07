@@ -1,10 +1,12 @@
-import sys
+import sys, os
 sys.path.append('..')
+sys.path.append(os.path.dirname(__file__))
 from py_trees import *
 from met_library import *
 import random
 from PIL import Image
 
+"""
 images = {
     "#":Image.open('../tiles/Met_X.png'),  # solid
     "(":Image.open('../tiles/0.png'),  # beam around door (ignore using background)
@@ -20,7 +22,7 @@ images = {
     "^":Image.open('../tiles/Met_^2.png'),  # lava
     "v":Image.open('../tiles/0.png')  # ??
 }
-
+"""
 def sample_met(d,dummy1,dummy2):
 	if d == 'DR':
 		d = 'UDR'

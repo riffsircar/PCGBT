@@ -5,6 +5,7 @@ from PIL import Image
 import random, sys
 from dungeon_helper import *
 from Metroid import *
+from tile_images import *
 
 CLOSED, OPEN, DOOR = 'closed','open', 'door'
 NORTH, SOUTH, EAST, WEST = 'north','south','east','west'
