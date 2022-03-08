@@ -58,7 +58,6 @@ class HorizontalSection(behaviour.Behaviour):
 		self.blackboard = self.attach_blackboard_client(name="H")
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='num_nodes',access=common.Access.READ)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
 		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
 		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
@@ -67,8 +66,6 @@ class HorizontalSection(behaviour.Behaviour):
 		self.num_nodes = num_nodes
 
 	def update(self):
-		levels = []
-		#nn = self.blackboard.num_nodes
 		for _ in range(self.num_nodes):
 			if self.game == 'mm':
 				level = mm_helper.sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
@@ -94,7 +91,6 @@ class BlendSegmentNode(behaviour.Behaviour):
 		self.dir = dir
 
 	def update(self):
-		levels = []
 		if self.game == 'mm':
 			level = mm_helper.sample_dir(self.dir,self.blackboard.prev,self.blackboard.dr)
 		else:
