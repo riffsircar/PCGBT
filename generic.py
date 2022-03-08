@@ -152,16 +152,9 @@ class GenericSegmentNode(behaviour.Behaviour):
 		return common.Status.SUCCESS
 
 def upward_section():
-	bbl = blackboard.Client()
-	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
 	root = composites.Sequence('Upward')
-	#ul = UpLeftSegment('UpLeft')
 	ul = GenericSegmentNode('UpLeft','UL')
-	bbl.num_nodes = random.randint(2,4)
-	print('Upward NN: ', bbl.num_nodes)
-	#ud = UpwardSegment('UpDown')
 	ud = GenericSegmentNode('UpDown','UD')
-	#dr = DownRightSegment('DownRight')
 	dr = GenericSegmentNode('Down Right','DR')
 	root.add_child(ul)
 	root.add_child(ud)
@@ -170,16 +163,9 @@ def upward_section():
 
 def downward_section():
 	print('Inside downward section')
-	bbl = blackboard.Client()
-	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
 	root = composites.Sequence('Downward')
-	#dl = DownLeftSegment('DownLeft')
 	dl = GenericSegmentNode('Down Left','DL')
-	bbl.num_nodes = random.randint(2,4)
-	print('Downward NN: ', bbl.num_nodes)
-	#ud = DownwardSegment('UpDown')
 	ud = GenericSegmentNode('UpDown','UD')
-	#ur = UpRightSegment('UpRight')
 	ur = GenericSegmentNode('Up Right', 'UR')
 	root.add_child(dl)
 	root.add_child(ud)
@@ -189,7 +175,6 @@ def downward_section():
 def select_ud():
 	root = composites.Selector('Vertical')
 	check = composites.Sequence('Check')
-	#do_up = DoUpward('Do Upward?')
 	do_up = CheckNode('Do Upward?','up_prob')
 	u = upward_section()
 	d = downward_section()
@@ -202,9 +187,7 @@ def select_ud():
 def select_hv():
 	root = composites.Selector('Horizontal or Vertical')
 	check = composites.Sequence('Check')
-	#do_h = DoHorizontal('Do Horizontal?')
 	do_h = CheckNode('Do Horizontal','h_prob')
-	#h = HorizontalSection('Horizontal')
 	h = GenericSection('Horizontal', 'LR',random.randint(2,4))
 	ud = select_ud()
 	check.add_child(do_h)
@@ -215,12 +198,7 @@ def select_hv():
 
 def create_root_generator():
 	root = composites.Sequence('Generic Level')
-	bbl = blackboard.Client()
-	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
 	hv = select_hv()
-	blackboard.num_nodes = random.randint(2,4)
-	print('NN: ',blackboard.num_nodes)
-	#h2 = HorizontalSection('Horizontal')
 	h2 = GenericSection('Horizontal','LR',random.randint(2,4))
 	#ud = select_ud()  # TODO: fix vertical MM infinite-sampling bug
 	root.add_child(hv)
@@ -237,7 +215,6 @@ if __name__ == "__main__":
 	blackboard.register_key(key='level',access=common.Access.WRITE)
 	blackboard.register_key(key='h_prob',access=common.Access.WRITE)
 	blackboard.register_key(key='up_prob',access=common.Access.WRITE)
-	blackboard.register_key(key='num_nodes',access=common.Access.WRITE)
 	blackboard.register_key(key='prev',access=common.Access.WRITE)
 	blackboard.register_key(key='dr',access=common.Access.WRITE)
 	blackboard.h_prob = 0.5

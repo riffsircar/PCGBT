@@ -39,7 +39,6 @@ class MarioBlendSegmentNode(behaviour.Behaviour):
 		self.blackboard.register_key(key='x',access=common.Access.WRITE)
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		self.blackboard.register_key(key='game',access=common.Access.READ)
 		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
 		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
 		self.pattern = pattern
@@ -61,7 +60,6 @@ class HorizontalSection(behaviour.Behaviour):
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
 		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
 		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
-		self.blackboard.register_key(key='game',access=common.Access.READ)
 		self.game = game
 		self.num_nodes = num_nodes
 
@@ -86,7 +84,6 @@ class BlendSegmentNode(behaviour.Behaviour):
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
 		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
 		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
-		self.blackboard.register_key(key='game',access=common.Access.READ)
 		self.game = game
 		self.dir = dir
 
@@ -103,8 +100,6 @@ class BlendSegmentNode(behaviour.Behaviour):
 
 def upward_section(game):
 	print('Inside upward section')
-	bbl = blackboard.Client()
-	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
 	root = composites.Sequence('Upward')
 	ul = BlendSegmentNode('UpLeft', game, 'UL')
 	ud = BlendSegmentNode('UpDown',game,'UD')
@@ -116,8 +111,6 @@ def upward_section(game):
 
 def downward_section(game):
 	print('Inside downward section')
-	bbl = blackboard.Client()
-	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
 	root = composites.Sequence('Downward')
 	dl = BlendSegmentNode('DownLeft',game,'DL')
 	ud = BlendSegmentNode('UpDown',game,'UD')
@@ -141,8 +134,6 @@ def select_ud():
 
 def create_mm():
 	root = composites.Selector('Mega Man')
-	bbl = blackboard.Client()
-	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
 	check = composites.Sequence('Check')
 	do_h = mm_helper.MegaManCheckNode('Do Horizontal?','h_prob')
 	h = HorizontalSection('Horizontal','mm',random.randint(2,4))
@@ -155,9 +146,6 @@ def create_mm():
 
 def create_met():
 	root = composites.Sequence('Metroid')
-	bbl = blackboard.Client()
-	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
-	bbl.num_nodes = random.randint(2,4)
 	h = HorizontalSection('Horizontal','met',random.randint(2,4))
 	u = upward_section('met')
 	root.add_child(h)
@@ -176,12 +164,7 @@ def create_mario():
 
 def create_root():
 	root = composites.Sequence('Blend')
-	bbl = blackboard.Client()
-	bbl.register_key(key='game',access=common.Access.WRITE)
-	bbl.game = 'smb'
-	print('in root', bbl.game)
 	mario = create_mario()
-	bbl.game = 'mm'
 	mm = create_mm()
 	met = create_met()
 	root.add_child(mario)
@@ -196,14 +179,11 @@ if __name__ == '__main__':
 	bbl.register_key(key='x',access=common.Access.WRITE)
 	bbl.register_key(key='y',access=common.Access.WRITE)
 	bbl.register_key(key='level',access=common.Access.WRITE)
-	bbl.register_key(key='game',access=common.Access.WRITE)
 	bbl.register_key(key='prev',access=common.Access.WRITE)
 	bbl.register_key(key='dr',access=common.Access.WRITE)
-	bbl.register_key(key='num_nodes',access=common.Access.WRITE)
 	bbl.register_key(key='up_prob',access=common.Access.WRITE)
 	bbl.register_key(key='h_prob',access=common.Access.WRITE)
-	bbl.x = 0
-	bbl.y = 0
+	bbl.x, bbl.y = 0, 0
 	bbl.up_prob, bbl.h_prob = 0.5, 0.5
 	bbl.prev, bbl.dr = None, None
 	bbl.level = {}
