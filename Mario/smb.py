@@ -1,6 +1,8 @@
-import sys
+import sys, os
 sys.path.append('..')
+sys.path.append(os.path.dirname(__file__))
 import py_trees
+print(os.getcwd())
 from smb_library import *
 from smb_helper import *
 
@@ -50,7 +52,7 @@ def create_root_generator():
 	root.add_child(gv)
 	return root
 
-if __name__ == '__main__':
+def generate(pp_prob=0.5, gap_prob=0.5):
 	root = create_root_generator()
 	bt = py_trees.trees.BehaviourTree(root)
 	blackboard = py_trees.blackboard.Client()
@@ -59,15 +61,13 @@ if __name__ == '__main__':
 	blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='pp_prob',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='gap_prob',access=py_trees.common.Access.WRITE)
-	blackboard.pp_prob = 0.5
-	blackboard.gap_prob = 0.5
-	blackboard.x = 0
-	blackboard.y = 0
+	blackboard.pp_prob = pp_prob
+	blackboard.gap_prob = gap_prob
+	blackboard.x, blackboard.y = 0, 0
 	blackboard.level = {}
-	#print(blackboard)
 	root.tick_once()
 	level_to_image(blackboard.level)
-	#with open('level.json','w') as f:
-	#	json.dump(LEVEL,f)
-	print(root.name)
 	py_trees.display.render_dot_tree(root)
+
+if __name__ == '__main__':
+	generate()

@@ -1,35 +1,8 @@
 import sys, os, random
 sys.path.append('..')
-from PIL import Image
+sys.path.append(os.path.dirname(__file__))
 from Metroid import met_library
-
-zelda_images = {
-   "B":Image.open('../tiles/Z_B.png'), # block
-   "D":Image.open('../tiles/DMM.png'), # door
-   "F":Image.open('../tiles/Z_F.png'), # floor
-   "I":Image.open('../tiles/Z_I.png'), # elemental block
-   "M":Image.open('../tiles/Z_M.png'), # statue/monster
-   "O":Image.open('../tiles/Z_O.png'), # elemental floor
-   "P":Image.open('../tiles/Z_P.png'), # pond/lava
-   "S":Image.open('../tiles/Z_S.png'), # stairs
-   "W":Image.open('../tiles/Z_W.png')  # wall
-}
-
-met_images = {
-    "#":Image.open('../tiles/Met_X.png'),  # solid
-    "(":Image.open('../tiles/0.png'),  # beam around door (ignore using background)
-    ")":Image.open('../tiles/0.png'),  # beam around door (ignore using background)
-    "+":Image.open('../tiles/Met_+.png'),  # powerup
-    "-":Image.open('../tiles/0.png'),   # background
-    "B":Image.open('../tiles/Met_B.png'),  # breakable
-    "D":Image.open('../tiles/Met_D.png'),  # door
-    "E":Image.open('../tiles/Met_E.png'),  # enemy
-    "P":Image.open('../tiles/0.png'),   # path
-    "[":Image.open('../tiles/Met_[.png'),  # ??
-    "]":Image.open('../tiles/Met_].png'),  # ??
-    "^":Image.open('../tiles/Met_^2.png'),  # lava
-    "v":Image.open('../tiles/0.png')  # ??
-}
+from tile_images import *
 
 def sample_dir(d):
 	levels = dirs[d]
@@ -66,7 +39,8 @@ def get_door_label(room):
 
 dirs = {}
 chunks = {}
-folder = 'zelda_rooms_new/'
+path = os.path.dirname(__file__)
+folder = path + '/zelda_rooms_new/'
 for idx, file_name in enumerate(os.listdir(folder)):
 	level = open(folder + file_name,'r').read().splitlines()
 	label = get_door_label(level)

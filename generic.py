@@ -1,4 +1,4 @@
-from py_trees import *
+import py_trees
 from PIL import Image
 import random
 from MegaMan import mm_library
@@ -85,31 +85,31 @@ def sample_met(d,dummy1,dummy2):
 
 sample_dir = sample_mm if GAME == 'mm' else sample_met
 
-class CheckNode(behaviour.Behaviour):
+class CheckNode(py_trees.behaviour.Behaviour):
 	def __init__(self,name,node_key):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		self.blackboard.register_key(key=node_key,access=common.Access.READ)
+		self.blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key=node_key,access=py_trees.common.Access.READ)
 		self.node_key = node_key
 
 	def update(self):
 		key_val = self.blackboard.get(self.node_key)
 		if random.random() < key_val:
-			return common.Status.SUCCESS
-		return common.Status.FAILURE
+			return py_trees.common.Status.SUCCESS
+		return py_trees.common.Status.FAILURE
 
-class GenericSection(behaviour.Behaviour):
+class GenericSection(py_trees.behaviour.Behaviour):
 	def __init__(self,name,dir,num_nodes):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
-		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
+		self.blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
 		self.dir = dir
 		self.num_nodes = num_nodes
 
@@ -125,17 +125,17 @@ class GenericSection(behaviour.Behaviour):
 				self.blackboard.y -= 1
 			elif self.dir == 'UD_D':
 				self.blackboard.y += 1
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 
-class GenericSegmentNode(behaviour.Behaviour):
+class GenericSegmentNode(py_trees.behaviour.Behaviour):
 	def __init__(self,name,dir):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
-		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
+		self.blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
 		self.dir = dir
 
 	def update(self):
@@ -149,10 +149,10 @@ class GenericSegmentNode(behaviour.Behaviour):
 			self.blackboard.y -= 1
 		elif self.dir in ['DL']:
 			self.blackboard.y += 1
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 
 def upward_section():
-	root = composites.Sequence('Upward')
+	root = py_trees.composites.Sequence('Upward')
 	ul = GenericSegmentNode('UpLeft','UL')
 	ud = GenericSegmentNode('UpDown','UD')
 	dr = GenericSegmentNode('Down Right','DR')
@@ -163,7 +163,7 @@ def upward_section():
 
 def downward_section():
 	print('Inside downward section')
-	root = composites.Sequence('Downward')
+	root = py_trees.composites.Sequence('Downward')
 	dl = GenericSegmentNode('Down Left','DL')
 	ud = GenericSegmentNode('UpDown','UD')
 	ur = GenericSegmentNode('Up Right', 'UR')
@@ -173,8 +173,8 @@ def downward_section():
 	return root
 
 def select_ud():
-	root = composites.Selector('Vertical')
-	check = composites.Sequence('Check')
+	root = py_trees.composites.Selector('Vertical')
+	check = py_trees.composites.Sequence('Check')
 	do_up = CheckNode('Do Upward?','up_prob')
 	u = upward_section()
 	d = downward_section()
@@ -185,8 +185,8 @@ def select_ud():
 	return root
 
 def select_hv():
-	root = composites.Selector('Horizontal or Vertical')
-	check = composites.Sequence('Check')
+	root = py_trees.composites.Selector('Horizontal or Vertical')
+	check = py_trees.composites.Sequence('Check')
 	do_h = CheckNode('Do Horizontal','h_prob')
 	h = GenericSection('Horizontal', 'LR',random.randint(2,4))
 	ud = select_ud()
@@ -197,7 +197,7 @@ def select_hv():
 	return root
 
 def create_root_generator():
-	root = composites.Sequence('Generic Level')
+	root = py_trees.composites.Sequence('Generic Level')
 	hv = select_hv()
 	h2 = GenericSection('Horizontal','LR',random.randint(2,4))
 	#ud = select_ud()  # TODO: fix vertical MM infinite-sampling bug
@@ -206,24 +206,25 @@ def create_root_generator():
 	#root.add_child(ud)
 	return root
 
-if __name__ == "__main__":
+def generate(h_prob=0.5, up_prob=0.5):
 	root = create_root_generator()
-	bt = trees.BehaviourTree(root)
-	blackboard = blackboard.Client()
-	blackboard.register_key(key='x',access=common.Access.WRITE)
-	blackboard.register_key(key='y',access=common.Access.WRITE)
-	blackboard.register_key(key='level',access=common.Access.WRITE)
-	blackboard.register_key(key='h_prob',access=common.Access.WRITE)
-	blackboard.register_key(key='up_prob',access=common.Access.WRITE)
-	blackboard.register_key(key='prev',access=common.Access.WRITE)
-	blackboard.register_key(key='dr',access=common.Access.WRITE)
-	blackboard.h_prob = 0.5
-	blackboard.up_prob = 0.5
-	blackboard.x = 0
-	blackboard.y = 0
+	bt = py_trees.trees.BehaviourTree(root)
+	blackboard = py_trees.blackboard.Client()
+	blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='h_prob',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='up_prob',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='prev',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
+	blackboard.h_prob, up_prob = h_prob, up_prob
+	blackboard.x, blackboard.y = 0, 0
 	blackboard.prev = None
 	blackboard.dr = 'LR'
 	blackboard.level = {}
 	root.tick_once()
 	level_to_image(blackboard.level)
-	display.render_dot_tree(root)
+	py_trees.display.render_dot_tree(root)
+
+if __name__ == "__main__":
+	generate()

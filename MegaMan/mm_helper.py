@@ -7,27 +7,6 @@ from tile_images import *
 import random
 from PIL import Image
 
-"""
-images = {
-	"#":Image.open('../tiles/MM_X2.png'),
-	"*":Image.open('../tiles/MM_star.png'),
-	"+":Image.open('../tiles/MM_+.png'),
-	"-":Image.open('../tiles/-.png'),
-	"B":Image.open('../tiles/MM_B2.png'),
-	"C":Image.open('../tiles/CMM.png'),
-	"D":Image.open('../tiles/DMM.png'),
-	"H":Image.open('../tiles/HMM.png'),
-	"L":Image.open('../tiles/MM_L.png'),
-	"M":Image.open('../tiles/MMM.png'),
-	"P":Image.open('../tiles/-.png'),
-	"U":Image.open('../tiles/MM_U.png'),
-	"W":Image.open('../tiles/MM_w.png'),
-	"l":Image.open('../tiles/MM_L.png'),
-	"t":Image.open('../tiles/TMM.png'),
-	"w":Image.open('../tiles/MM_w.png'),
-	"|":Image.open('../tiles/LMM.png')
-}
-"""
 def level_to_image(level):
 	width, height = 0, 0
 	xs = [x for (x,y) in level]
@@ -88,8 +67,6 @@ def sample_dir(this_dr, prev_lev, prev_dr):
 		elif prev_dr in ['DL','UD_D']:
 			if compare(prev_down,this_up,True):
 				break
-
-	#print('prev dr: ', prev_dr)
 	return chunks[idx]
 
 class MegaManSegmentNode(behaviour.Behaviour):

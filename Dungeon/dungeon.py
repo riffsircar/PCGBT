@@ -1,6 +1,7 @@
-import sys
+import sys, os
 sys.path.append('..')
-from py_trees import *
+sys.path.append(os.path.dirname(__file__))
+import py_trees
 from PIL import Image
 import random, sys
 from dungeon_helper import *
@@ -12,7 +13,7 @@ NORTH, SOUTH, EAST, WEST = 'north','south','east','west'
 DIRS = [NORTH, SOUTH, EAST, WEST]
 N = 5
 GAME = 'zelda' # zelda, met
-dims = (15,16) if GAME == 'met' else (11,16)
+
 
 def neighbor(cell, dr):
 	if dr == NORTH:
@@ -38,30 +39,30 @@ def opposite(dr):
 	else:
 		raise RuntimeError('invalid direction')
 
-class StartRoom(behaviour.Behaviour):
+class StartRoom(py_trees.behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name="Start")
-		self.blackboard.register_key(key='cell',access=common.Access.WRITE)
-		self.blackboard.register_key(key='dir',access=common.Access.WRITE)
-		self.blackboard.register_key(key='layout',access=common.Access.WRITE)
-		self.blackboard.register_key(key='started',access=common.Access.WRITE)
+		self.blackboard.register_key(key='cell',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='dir',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='layout',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='started',access=py_trees.common.Access.WRITE)
 	def update(self):
 		d = random.choice(DIRS)
 		self.blackboard.layout[self.blackboard.cell] = {}
 		for dir in DIRS:
 			self.blackboard.layout[self.blackboard.cell][dir] = CLOSED
 		self.blackboard.started = True
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 
-class PlaceRoom(behaviour.Behaviour):
+class PlaceRoom(py_trees.behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='cell',access=common.Access.WRITE)
-		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
-		self.blackboard.register_key(key='layout',access=common.Access.WRITE)
-		self.blackboard.register_key(key='generated',access=common.Access.WRITE)
+		self.blackboard.register_key(key='cell',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='layout',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='generated',access=py_trees.common.Access.WRITE)
 		
 	def update(self):
 		cells = list(self.blackboard.layout.keys())
@@ -76,15 +77,15 @@ class PlaceRoom(behaviour.Behaviour):
 		self.blackboard.cell, self.blackboard.dr = random.choice(options)
 		self.blackboard.generated += 1
 		print('incremented generated', self.blackboard.generated)
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 
-class ConnectRoom(behaviour.Behaviour):
+class ConnectRoom(py_trees.behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='cell',access=common.Access.WRITE)
-		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
-		self.blackboard.register_key(key='layout',access=common.Access.WRITE)
+		self.blackboard.register_key(key='cell',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='layout',access=py_trees.common.Access.WRITE)
 		
 		
 	def update(self):
@@ -99,48 +100,48 @@ class ConnectRoom(behaviour.Behaviour):
 				self.blackboard.layout[nbr][dr] = CLOSED
 		
 		self.blackboard.layout[nbr][opp] = OPEN
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 
-class CheckNumRooms(behaviour.Behaviour):
+class CheckNumRooms(py_trees.behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='n',access=common.Access.READ)
-		self.blackboard.register_key(key='generated',access=common.Access.READ)
+		self.blackboard.register_key(key='n',access=py_trees.common.Access.READ)
+		self.blackboard.register_key(key='generated',access=py_trees.common.Access.READ)
 		
 	def update(self):
 		print('Generated: ', self.blackboard.generated)
 		print('N: ', self.blackboard.n)
 		if self.blackboard.generated < self.blackboard.n:
 			print('generating more')
-			return common.Status.FAILURE
+			return py_trees.common.Status.FAILURE
 		print('stopping generation')
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 
-class CheckStart(behaviour.Behaviour):
+class CheckStart(py_trees.behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='started',access=common.Access.READ)
+		self.blackboard.register_key(key='started',access=py_trees.common.Access.READ)
 		
 	def update(self):
 		if self.blackboard.started:
-			return common.Status.SUCCESS
-		return common.Status.FAILURE
+			return py_trees.common.Status.SUCCESS
+		return py_trees.common.Status.FAILURE
 
-class SetNumRooms(behaviour.Behaviour):
+class SetNumRooms(py_trees.behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='n',access=common.Access.WRITE)
+		self.blackboard.register_key(key='n',access=py_trees.common.Access.WRITE)
 		
 	def update(self):
 		self.blackboard.n = random.randint(5,10)
 		print('N: ', self.blackboard.n)
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 		
 def generate_more():
-	root = composites.Selector('Generate More?')
+	root = py_trees.composites.Selector('Generate More?')
 	check = CheckNumRooms('CheckNumRooms')
 	gr = generate_room()
 	root.add_child(check)
@@ -148,7 +149,7 @@ def generate_more():
 	return root
 
 def is_start():
-	root = composites.Selector('Started?')
+	root = py_trees.composites.Selector('Started?')
 	check = CheckStart('CheckStart')
 	start = StartRoom('Generate Start Room')
 	root.add_child(check)
@@ -156,7 +157,7 @@ def is_start():
 	return root
 
 def generate_dungeon():
-	root = composites.Sequence('Generate Dungeon')
+	root = py_trees.composites.Sequence('Generate Dungeon')
 	n = SetNumRooms('Set Num Rooms')
 	gr = generate_rooms()
 	root.add_child(n)
@@ -164,7 +165,7 @@ def generate_dungeon():
 	return root
 
 def generate_room():
-	root = composites.Sequence('Generate Room')
+	root = py_trees.composites.Sequence('Generate Room')
 	pr = PlaceRoom('Place Room')
 	cr = ConnectRoom('Connect Room')
 	root.add_child(pr)
@@ -172,9 +173,9 @@ def generate_room():
 	return root
 
 def generate_rooms():
-	root = composites.Sequence('Generate Rooms')
+	root = py_trees.composites.Sequence('Generate Rooms')
 	#n = SetNumRooms('Set Num Rooms')
-	#bb.register_key(key='n',access=common.Access.READ)
+	#bb.register_key(key='n',access=py_trees.common.Access.READ)
 	for _ in range(N):
 		pr = PlaceRoom('Place Room')
 		cr = ConnectRoom('Connect Room')
@@ -182,18 +183,18 @@ def generate_rooms():
 		root.add_child(cr)
 	return root
 
-if __name__=='__main__':
-	root = composites.Sequence('Dungeon')
-	blackboard = blackboard.Client()
-	blackboard.register_key(key='cell',access=common.Access.WRITE)
-	blackboard.register_key(key='dr',access=common.Access.WRITE)
-	blackboard.register_key(key='layout',access=common.Access.WRITE)
-	blackboard.register_key(key='generated',access=common.Access.WRITE)
-	blackboard.register_key(key='n',access=common.Access.WRITE)
-	blackboard.register_key(key='started',access=common.Access.WRITE)
+def generate(game='zelda', num_rooms=10):
+	root = py_trees.composites.Sequence('Dungeon')
+	blackboard = py_trees.blackboard.Client()
+	blackboard.register_key(key='cell',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='layout',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='generated',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='n',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='started',access=py_trees.common.Access.WRITE)
 	blackboard.started = False
 	blackboard.generated = 0
-	blackboard.n = random.randint(10,15)
+	blackboard.n = num_rooms
 	blackboard.cell = (0,0)
 	blackboard.layout = {}
 	start = is_start()
@@ -201,20 +202,17 @@ if __name__=='__main__':
 	#dung = generate_dungeon()
 	root.add_child(start)
 	root.add_child(more)
-	display.render_dot_tree(root)
+	py_trees.display.render_dot_tree(root)
 	while blackboard.generated < blackboard.n:
 		print('Generated ',blackboard.generated)
 		root.tick_once()
-	#print(blackboard.layout)
+	dims = (15,16) if game == 'met' else (11,16)
 	cells = list(blackboard.layout.keys())
-	x_lo = min(cells)[0]
-	x_hi = max(cells)[0]
-	y_lo = min(cells, key=lambda x: x[1])[1]
-	y_hi = max(cells, key=lambda x: x[1])[1]
+	x_lo, x_hi = min(cells)[0], max(cells)[0]
+	y_lo, y_hi = min(cells, key=lambda x: x[1])[1], max(cells, key=lambda x: x[1])[1]
 	width, height = abs(x_lo - x_hi)+1, abs(y_hi - y_lo)+1
 	x_adj, y_adj = abs(x_lo * 256 - 0), abs((y_lo * dims[0] * 16) - 0)
 	print(width, height)
-	#print(x_adj, y_adj)
 	layout_img = Image.new('RGB',(width*256, height*(dims[0]*16)))
 
 	for y in range(y_lo, y_hi + 1):
@@ -271,8 +269,8 @@ if __name__=='__main__':
 				line += '┘'
 		print(line)
 	layout = blackboard.layout
-	sample = sample_met if GAME == 'metroid' else sample_dir
-	images = met_images if GAME == 'metroid' else zelda_images
+	sample = sample_met if game == 'metroid' else sample_dir
+	images = met_images if game == 'metroid' else zelda_images
 	for key in layout:
 		x, y = key
 		cell = layout[key]
@@ -294,3 +292,6 @@ if __name__=='__main__':
 		x_pos, y_pos, x_del, y_del = (x*256)+x_adj, (y*dims[0]*16)+y_adj, 16*16, dims[0]*16
 		layout_img.paste(img, (x_pos,y_pos))
 		layout_img.save('dung_met.png')
+
+if __name__=='__main__':
+	generate()

@@ -1,6 +1,6 @@
 import sys, os
 sys.path.append(os.path.dirname(__file__))
-from py_trees import *
+import py_trees
 from smb_library import *
 from tile_images import *
 import random
@@ -24,7 +24,6 @@ def level_to_image(level):
 	level_img = Image.new('RGB',((width+1)*(16*16), 15*16))
 	print(level_img.size)
 	for x,y in level:
-		print(x,y)
 		lev = level[(x,y)]
 		img = Image.new('RGB',(16*16,15*16))
 		for row, seq in enumerate(lev):
@@ -38,14 +37,12 @@ def sample_pattern(p):
 	for pat in patterns:
 		if pat.startswith(p):
 			levels.extend(patterns[pat])
-	print(len(levels))
 	level = random.choice(levels)
 	return chunks[level]
 
 def sample_pattern_groups(pats,exact=False):
 	levels = []
-	for key in chunk_pats:
-		chunk_pat = chunk_pats[key]
+	for key, chunk_pat in chunk_pats.items():
 		for pat in pats:
 			if not exact:
 				if any(p in chunk_pat for p in dp[pat]):
@@ -53,13 +50,7 @@ def sample_pattern_groups(pats,exact=False):
 			else:
 				if all(p in chunk_pat for p in dp[pat]):
 					levels.append(key)
-			"""
-			for cp in chunk_pat:
-				if cp.startswith(pat):
-					levels.append(key)
-			"""
 	level = random.choice(levels)
-	print(chunk_pats[level])
 	return chunks[level]
 
 def get_pipe_levels():
@@ -69,39 +60,33 @@ def get_pipe_levels():
 			levels.extend(patterns[pat])
 	return levels
 
-class MarioSegmentNode(behaviour.Behaviour):
+class MarioSegmentNode(py_trees.behaviour.Behaviour):
 	def __init__(self,name,pattern):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
 		self.pattern = pattern
 	
 	def update(self):
-		print('Sampling ' + self.name)
 		level = sample_pattern_groups(self.pattern)
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		print('Level: ', self.blackboard.level)
 		self.blackboard.x += 1
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 
-class MarioCheckNode(behaviour.Behaviour):
+class MarioCheckNode(py_trees.behaviour.Behaviour):
 	def __init__(self,name,node_key):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		self.blackboard.register_key(key=node_key,access=common.Access.READ)
+		self.blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key=node_key,access=py_trees.common.Access.READ)
 		self.node_key = node_key
 
 	def update(self):
-		levels = []
 		key_val = self.blackboard.get(self.node_key)
-		#if random.random() < self.blackboard.pp_prob:
 		if random.random() < key_val:
-			print('doing pp')
-			return common.Status.SUCCESS
-		print('doing se')
-		return common.Status.FAILURE
+			return py_trees.common.Status.SUCCESS
+		return py_trees.common.Status.FAILURE

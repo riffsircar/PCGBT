@@ -1,5 +1,6 @@
-import sys
+import sys, os
 sys.path.append('..')
+sys.path.append(os.path.dirname(__file__))
 import py_trees
 from mm_library import *
 from mm_helper import *
@@ -76,7 +77,7 @@ def create_root_generator():
 	return root
 
 
-if __name__ == '__main__':
+def generate(h_prob=0.5, up_prob=0.5):
 	root = create_root_generator()
 	bt = py_trees.trees.BehaviourTree(root)
 	blackboard = py_trees.blackboard.Client()
@@ -87,18 +88,15 @@ if __name__ == '__main__':
 	blackboard.register_key(key='up_prob',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='prev',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
-	blackboard.h_prob = 0.5
-	blackboard.up_prob = 0.5
-	blackboard.x = 0
-	blackboard.y = 0
+	blackboard.h_prob = h_prob
+	blackboard.up_prob = up_prob
+	blackboard.x, blackboard.y = 0, 0
 	blackboard.prev = None
 	blackboard.dr = 'LR'
 	blackboard.level = {}
-	#print(blackboard)
 	root.tick_once()
-	#print(blackboard)
-	#print(LEVEL)
 	level_to_image(blackboard.level)
-	#with open('level.json','w') as f:
-	#	json.dump(LEVEL,f)
 	py_trees.display.render_dot_tree(root)
+
+if __name__ == '__main__':
+	generate()

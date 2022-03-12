@@ -1,4 +1,4 @@
-from py_trees import *
+import py_trees
 from Mario import smb_helper
 from MegaMan import mm_helper
 from Metroid import met_helper
@@ -32,15 +32,15 @@ def level_to_image(level):
 		level_img.paste(img,(x*256,y_adj*240))
 	level_img.save('blend level.png')
 
-class MarioBlendSegmentNode(behaviour.Behaviour):
+class MarioBlendSegmentNode(py_trees.behaviour.Behaviour):
 	def __init__(self,name,pattern):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
-		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
+		self.blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
 		self.pattern = pattern
 	
 	def update(self):
@@ -49,17 +49,17 @@ class MarioBlendSegmentNode(behaviour.Behaviour):
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = [level, 'smb']
 		self.blackboard.dr = 'LR'
 		self.blackboard.x += 1
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 
-class HorizontalSection(behaviour.Behaviour):
+class HorizontalSection(py_trees.behaviour.Behaviour):
 	def __init__(self,name,game,num_nodes):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name="H")
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
-		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
+		self.blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
 		self.game = game
 		self.num_nodes = num_nodes
 
@@ -73,17 +73,17 @@ class HorizontalSection(behaviour.Behaviour):
 			self.blackboard.dr = 'LR'
 			self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = [level, self.game]
 			self.blackboard.x += 1
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 
-class BlendSegmentNode(behaviour.Behaviour):
+class BlendSegmentNode(py_trees.behaviour.Behaviour):
 	def __init__(self,name,game,dir):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='x',access=common.Access.WRITE)
-		self.blackboard.register_key(key='y',access=common.Access.WRITE)
-		self.blackboard.register_key(key='level',access=common.Access.WRITE)
-		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
-		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
+		self.blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
 		self.game = game
 		self.dir = dir
 
@@ -96,11 +96,11 @@ class BlendSegmentNode(behaviour.Behaviour):
 		self.blackboard.dr = self.dir
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = [level, self.game]
 		self.blackboard.y -= 1
-		return common.Status.SUCCESS
+		return py_trees.common.Status.SUCCESS
 
 def upward_section(game):
 	print('Inside upward section')
-	root = composites.Sequence('Upward')
+	root = py_trees.composites.Sequence('Upward')
 	ul = BlendSegmentNode('UpLeft', game, 'UL')
 	ud = BlendSegmentNode('UpDown',game,'UD')
 	dr = BlendSegmentNode('DownRight',game,'DR')
@@ -111,7 +111,7 @@ def upward_section(game):
 
 def downward_section(game):
 	print('Inside downward section')
-	root = composites.Sequence('Downward')
+	root = py_trees.composites.Sequence('Downward')
 	dl = BlendSegmentNode('DownLeft',game,'DL')
 	ud = BlendSegmentNode('UpDown',game,'UD')
 	ur = BlendSegmentNode('UpRight',game,'UR')
@@ -121,8 +121,8 @@ def downward_section(game):
 	return root
 
 def select_ud():
-	root = composites.Selector('Vertical')
-	check = composites.Sequence('Check')
+	root = py_trees.composites.Selector('Vertical')
+	check = py_trees.composites.Sequence('Check')
 	do_up = mm_helper.MegaManCheckNode('Do Upward?','up_prob')
 	u = upward_section('mm')
 	d = downward_section('mm')
@@ -133,8 +133,8 @@ def select_ud():
 	return root
 
 def create_mm():
-	root = composites.Selector('Mega Man')
-	check = composites.Sequence('Check')
+	root = py_trees.composites.Selector('Mega Man')
+	check = py_trees.composites.Sequence('Check')
 	do_h = mm_helper.MegaManCheckNode('Do Horizontal?','h_prob')
 	h = HorizontalSection('Horizontal','mm',random.randint(2,4))
 	down = downward_section('mm')
@@ -145,7 +145,7 @@ def create_mm():
 	return root
 
 def create_met():
-	root = composites.Sequence('Metroid')
+	root = py_trees.composites.Sequence('Metroid')
 	h = HorizontalSection('Horizontal','met',random.randint(2,4))
 	u = upward_section('met')
 	root.add_child(h)
@@ -153,7 +153,7 @@ def create_met():
 	return root
 
 def create_mario():
-	root = composites.Sequence('Mario')
+	root = py_trees.composites.Sequence('Mario')
 	init = MarioBlendSegmentNode('Initial',['I'])
 	pipes = MarioBlendSegmentNode('Pipes',['|'])
 	stairs = MarioBlendSegmentNode('Stairs',['S'])
@@ -163,7 +163,7 @@ def create_mario():
 	return root
 
 def create_root():
-	root = composites.Sequence('Blend')
+	root = py_trees.composites.Sequence('Blend')
 	mario = create_mario()
 	mm = create_mm()
 	met = create_met()
@@ -172,22 +172,24 @@ def create_root():
 	root.add_child(met)
 	return root
 
-if __name__ == '__main__':
+def generate(up_prob=0.5, h_prob=0.5):
 	root = create_root()
-	bt = trees.BehaviourTree(root)
-	bbl = blackboard.Client()
-	bbl.register_key(key='x',access=common.Access.WRITE)
-	bbl.register_key(key='y',access=common.Access.WRITE)
-	bbl.register_key(key='level',access=common.Access.WRITE)
-	bbl.register_key(key='prev',access=common.Access.WRITE)
-	bbl.register_key(key='dr',access=common.Access.WRITE)
-	bbl.register_key(key='up_prob',access=common.Access.WRITE)
-	bbl.register_key(key='h_prob',access=common.Access.WRITE)
+	bt = py_trees.trees.BehaviourTree(root)
+	bbl = py_trees.blackboard.Client()
+	bbl.register_key(key='x',access=py_trees.common.Access.WRITE)
+	bbl.register_key(key='y',access=py_trees.common.Access.WRITE)
+	bbl.register_key(key='level',access=py_trees.common.Access.WRITE)
+	bbl.register_key(key='prev',access=py_trees.common.Access.WRITE)
+	bbl.register_key(key='dr',access=py_trees.common.Access.WRITE)
+	bbl.register_key(key='up_prob',access=py_trees.common.Access.WRITE)
+	bbl.register_key(key='h_prob',access=py_trees.common.Access.WRITE)
 	bbl.x, bbl.y = 0, 0
-	bbl.up_prob, bbl.h_prob = 0.5, 0.5
+	bbl.up_prob, bbl.h_prob = up_prob, h_prob
 	bbl.prev, bbl.dr = None, None
 	bbl.level = {}
 	root.tick_once()
-	print(bbl.level)
 	level_to_image(bbl.level)
-	display.render_dot_tree(root)
+	py_trees.display.render_dot_tree(root)
+
+if __name__ == '__main__':
+	generate()
