@@ -172,7 +172,7 @@ def create_root():
 	root.add_child(met)
 	return root
 
-def generate(up_prob=0.5, h_prob=0.5):
+def generate(h_prob=0.5, up_prob=0.5):
 	root = create_root()
 	bt = py_trees.trees.BehaviourTree(root)
 	bbl = py_trees.blackboard.Client()
