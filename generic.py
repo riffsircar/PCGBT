@@ -20,9 +20,7 @@ def level_to_image(level):
 	ys_adj = [y+abs(min_y) for y in ys]
 	width, height = max(xs), max(ys_adj)
 	level_img = Image.new('RGB',((width+1)*(16*16), (height+1)*15*16))
-	print(level_img.size)
 	for x,y in level:
-		print(x,y)
 		lev = level[(x,y)]
 		img = Image.new('RGB',(16*16,15*16))
 		for row, seq in enumerate(lev):
@@ -33,7 +31,6 @@ def level_to_image(level):
 	level_img.save('generic_' + GAME + '.png')
 
 def compare(s1,s2,vert=False):
-	print('in compare')
 	for a,b in zip(s1,s2):
 		if a == '-' and b == '-':
 			return True
@@ -51,7 +48,8 @@ def sample_mm(dr,prev_lev, prev_dr):
 	prev_up, prev_down = prev_lev[0], prev_lev[len(prev_lev)-1]
 	prev_left, prev_right = prev_t[0], prev_t[len(prev_t)-1]
 	
-	while True:
+	tries = 0
+	while tries < 1000:
 		idx = random.choice(levels)
 		level = chunks[idx]
 		level_t = [''.join(s) for s in zip(*level)]
@@ -69,7 +67,8 @@ def sample_mm(dr,prev_lev, prev_dr):
 		elif prev_dr in ['DL','UD_D']:
 			if compare(prev_down,this_up,True):
 				break
-	#print('prev dr: ', prev_dr)
+	if tries >= 1000:
+		return None
 	return chunks[idx]
 
 def sample_met(d,dummy1,dummy2):
@@ -116,6 +115,8 @@ class GenericSection(py_trees.behaviour.Behaviour):
 	def update(self):
 		for _ in range(self.num_nodes):
 			level = sample_dir(self.dir[:2],self.blackboard.prev,self.blackboard.dr)
+			if level is None:
+				return py_trees.common.Status.FAILURE
 			self.blackboard.prev = level
 			self.blackboard.dr = self.dir
 			self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
@@ -140,6 +141,8 @@ class GenericSegmentNode(py_trees.behaviour.Behaviour):
 
 	def update(self):
 		level = sample_dir(self.dir[:2],self.blackboard.prev,self.blackboard.dr)
+		if level is None:
+			return py_trees.common.Status.FAILURE
 		self.blackboard.prev = level
 		self.blackboard.dr = self.dir
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
@@ -162,7 +165,6 @@ def upward_section():
 	return root
 
 def downward_section():
-	print('Inside downward section')
 	root = py_trees.composites.Sequence('Downward')
 	dl = GenericSegmentNode('Down Left','DL')
 	ud = GenericSegmentNode('UpDown','UD')
@@ -200,10 +202,10 @@ def create_root_generator():
 	root = py_trees.composites.Sequence('Generic Level')
 	hv = select_hv()
 	h2 = GenericSection('Horizontal','LR',random.randint(2,4))
-	#ud = select_ud()  # TODO: fix vertical MM infinite-sampling bug
+	ud = select_ud()  # can fail
 	root.add_child(hv)
 	root.add_child(h2)
-	#root.add_child(ud)
+	root.add_child(ud)
 	return root
 
 def generate(h_prob=0.5, up_prob=0.5):

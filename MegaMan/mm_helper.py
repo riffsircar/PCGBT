@@ -15,9 +15,7 @@ def level_to_image(level):
 	ys_adj = [y+abs(min_y) for y in ys]
 	width, height = max(xs), max(ys_adj)
 	level_img = Image.new('RGB',((width+1)*(16*16), (height+1)*15*16))
-	print(level_img.size)
 	for x,y in level:
-		print(x,y)
 		lev = level[(x,y)]
 		img = Image.new('RGB',(16*16,15*16))
 		for row, seq in enumerate(lev):
@@ -28,7 +26,6 @@ def level_to_image(level):
 	level_img.save('test.png')
 
 def compare(s1,s2,vert=False):
-	#print('in compare')
 	for a,b in zip(s1,s2):
 		if a == '-' and b == '-':
 			return True
@@ -38,16 +35,17 @@ def compare(s1,s2,vert=False):
 	return False
 
 def sample_dir(this_dr, prev_lev, prev_dr):
-	#print('dr: ', dr)
 	levels = dirs[this_dr]
 	if not prev_lev:
 		idx = random.choice(levels)
 		return chunks[idx]
+
 	prev_t = [''.join(s) for s in zip(*prev_lev)]
 	prev_up, prev_down = prev_lev[0], prev_lev[len(prev_lev)-1]
 	prev_left, prev_right = prev_t[0], prev_t[len(prev_t)-1]
-	
-	while True:
+
+	tries = 0
+	while tries < 1000:
 		idx = random.choice(levels)
 		level = chunks[idx]
 		level_t = [''.join(s) for s in zip(*level)]
@@ -62,11 +60,19 @@ def sample_dir(this_dr, prev_lev, prev_dr):
 			if compare(prev_right,this_left):
 				break
 		elif prev_dr in ['UL','UD_U']:
+			# print('prev:')
+			# print('\n'.join(prev_lev),'\n')
+			# print('this:')
+			# print('\n'.join(level),'\n\n')
+			# print(this_dr, prev_dr)
 			if compare(prev_up,this_down,True):
 				break
 		elif prev_dr in ['DL','UD_D']:
 			if compare(prev_down,this_up,True):
 				break
+		tries += 1
+	if tries >= 1000:
+		return None
 	return chunks[idx]
 
 class MegaManSegmentNode(behaviour.Behaviour):
@@ -77,13 +83,16 @@ class MegaManSegmentNode(behaviour.Behaviour):
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
 		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
-		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dir',access=common.Access.WRITE)
 		self.dir = dir
 	
 	def update(self):
-		level = sample_dir(self.dir[:2],self.blackboard.prev,self.blackboard.dr)
+		level = sample_dir(self.dir[:2],self.blackboard.prev,self.blackboard.dir)
+		if level is None:
+			print("Sampling failed")
+			return common.Status.FAILURE
 		self.blackboard.prev = level
-		self.blackboard.dr = self.dir
+		self.blackboard.dir = self.dir
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		if self.dir == 'LR':
 			self.blackboard.x += 1
@@ -118,15 +127,17 @@ class MegaManSection(behaviour.Behaviour):
 		self.blackboard.register_key(key='y',access=common.Access.WRITE)
 		self.blackboard.register_key(key='level',access=common.Access.WRITE)
 		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
-		self.blackboard.register_key(key='dr',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dir',access=common.Access.WRITE)
 		self.dir = dir
 		self.num_nodes = num_nodes
 
 	def update(self):
 		for _ in range(self.num_nodes):
-			level = sample_dir(self.dir[:2],self.blackboard.prev,self.blackboard.dr)
+			level = sample_dir(self.dir[:2],self.blackboard.prev,self.blackboard.dir)
+			if level is None:
+				return common.Status.FAILURE
 			self.blackboard.prev = level
-			self.blackboard.dr = self.dir
+			self.blackboard.dir = self.dir
 			self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 			if self.dir == 'LR':
 				self.blackboard.x += 1

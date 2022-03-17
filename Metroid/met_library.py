@@ -17,6 +17,3 @@ for i, file_name in enumerate(os.listdir(folder)):
 	dirs[d].append(i)
 	chunks[i] = level
 	chunk_dir[i] = d
-
-
-print(dirs.keys())

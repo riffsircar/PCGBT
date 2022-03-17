@@ -22,7 +22,6 @@ def level_to_image(level):
 	ys = [y for (x,y) in level]
 	width, height = max(xs), max(ys)
 	level_img = Image.new('RGB',((width+1)*(16*16), 15*16))
-	print(level_img.size)
 	for x,y in level:
 		lev = level[(x,y)]
 		img = Image.new('RGB',(16*16,15*16))

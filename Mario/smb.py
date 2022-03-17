@@ -2,7 +2,6 @@ import sys, os
 sys.path.append('..')
 sys.path.append(os.path.dirname(__file__))
 import py_trees
-print(os.getcwd())
 from smb_library import *
 from smb_helper import *
 

@@ -62,14 +62,11 @@ def create_root_generator():
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
 	h1 = MegaManSection('Horizontal','LR',random.randint(2,4))
-	print('h1 done')
 	root.add_child(h1)
 	hv = select_hv()
 	h2 = MegaManSection('Middle Horizontal','LR',random.randint(2,4))
-	print('h2 done')
 	ud = select_ud()
 	h3 = MegaManSection('Final Horizontal','LR',random.randint(2,4))
-	print('h3 done')
 	root.add_child(hv)
 	root.add_child(h2)
 	root.add_child(ud)
@@ -87,12 +84,12 @@ def generate(h_prob=0.5, up_prob=0.5):
 	blackboard.register_key(key='h_prob',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='up_prob',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='prev',access=py_trees.common.Access.WRITE)
-	blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='dir',access=py_trees.common.Access.WRITE)
 	blackboard.h_prob = h_prob
 	blackboard.up_prob = up_prob
 	blackboard.x, blackboard.y = 0, 0
 	blackboard.prev = None
-	blackboard.dr = 'LR'
+	blackboard.dir = 'LR'
 	blackboard.level = {}
 	root.tick_once()
 	level_to_image(blackboard.level)

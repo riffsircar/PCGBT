@@ -14,10 +14,9 @@ def level_to_image(level):
 	ys_adj = [y+abs(min_y) for y in ys]
 	width, height = max(xs), max(ys_adj)
 	level_img = Image.new('RGB',((width+1)*(16*16), (height+1)*15*16))
-	print(level_img.size)
 	for (x,y) in level:
 		lev, game = level[(x,y)][0], level[(x,y)][1]
-		print('\n'.join(lev), game)
+		#print('\n'.join(lev), game)
 		if game == 'smb':
 			images = smb_images
 		elif game == 'mm':
@@ -67,6 +66,8 @@ class HorizontalSection(py_trees.behaviour.Behaviour):
 		for _ in range(self.num_nodes):
 			if self.game == 'mm':
 				level = mm_helper.sample_dir('LR',self.blackboard.prev,self.blackboard.dr)
+				if level is None:
+					return py_trees.common.Status.FAILURE
 			else:
 				level = met_helper.sample_met('LR',None,None)
 			self.blackboard.prev = level
@@ -90,6 +91,8 @@ class BlendSegmentNode(py_trees.behaviour.Behaviour):
 	def update(self):
 		if self.game == 'mm':
 			level = mm_helper.sample_dir(self.dir,self.blackboard.prev,self.blackboard.dr)
+			if level is None:
+				return py_trees.common.Status.FAILURE
 		else:
 			level = met_helper.sample_met(self.dir,None,None)
 		self.blackboard.prev = level
@@ -99,7 +102,6 @@ class BlendSegmentNode(py_trees.behaviour.Behaviour):
 		return py_trees.common.Status.SUCCESS
 
 def upward_section(game):
-	print('Inside upward section')
 	root = py_trees.composites.Sequence('Upward')
 	ul = BlendSegmentNode('UpLeft', game, 'UL')
 	ud = BlendSegmentNode('UpDown',game,'UD')
@@ -110,7 +112,6 @@ def upward_section(game):
 	return root
 
 def downward_section(game):
-	print('Inside downward section')
 	root = py_trees.composites.Sequence('Downward')
 	dl = BlendSegmentNode('DownLeft',game,'DL')
 	ud = BlendSegmentNode('UpDown',game,'UD')

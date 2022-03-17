@@ -17,6 +17,3 @@ for file_name in os.listdir(folder):
 	dirs[d].append(idx)
 	chunks[idx] = level
 	chunk_dir[idx] = d
-
-
-#print(dirs.keys())
