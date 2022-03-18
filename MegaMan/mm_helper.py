@@ -5,25 +5,6 @@ from py_trees import *
 from mm_library import *
 from tile_images import *
 import random
-from PIL import Image
-
-def level_to_image(level):
-	width, height = 0, 0
-	xs = [x for (x,y) in level]
-	ys = [y for (x,y) in level]
-	min_y = min(ys)
-	ys_adj = [y+abs(min_y) for y in ys]
-	width, height = max(xs), max(ys_adj)
-	level_img = Image.new('RGB',((width+1)*(16*16), (height+1)*15*16))
-	for x,y in level:
-		lev = level[(x,y)]
-		img = Image.new('RGB',(16*16,15*16))
-		for row, seq in enumerate(lev):
-			for col, tile in enumerate(seq):
-				img.paste(mm_images[tile],(col*16,row*16))
-		y_adj = y+abs(min_y)
-		level_img.paste(img,(x*256,y_adj*240))
-	level_img.save('test.png')
 
 def compare(s1,s2,vert=False):
 	for a,b in zip(s1,s2):
@@ -89,7 +70,7 @@ class MegaManSegmentNode(behaviour.Behaviour):
 	def update(self):
 		level = sample_dir(self.dir[:2],self.blackboard.prev,self.blackboard.dir)
 		if level is None:
-			print("Sampling failed")
+			print("Sampling failed!!")
 			return common.Status.FAILURE
 		self.blackboard.prev = level
 		self.blackboard.dir = self.dir

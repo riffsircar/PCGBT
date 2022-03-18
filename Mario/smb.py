@@ -51,7 +51,7 @@ def create_root_generator():
 	root.add_child(gv)
 	return root
 
-def generate(pp_prob=0.5, gap_prob=0.5):
+def generate(pp_prob=0.5, gap_prob=0.5, name='smb_level'):
 	root = create_root_generator()
 	bt = py_trees.trees.BehaviourTree(root)
 	blackboard = py_trees.blackboard.Client()
@@ -65,8 +65,8 @@ def generate(pp_prob=0.5, gap_prob=0.5):
 	blackboard.x, blackboard.y = 0, 0
 	blackboard.level = {}
 	root.tick_once()
-	level_to_image(blackboard.level)
-	py_trees.display.render_dot_tree(root)
+	level_to_image(blackboard.level, name, 'smb')
+	py_trees.display.render_dot_tree(root, name=name + '_tree')
 
 if __name__ == '__main__':
 	generate()

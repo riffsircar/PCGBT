@@ -6,7 +6,7 @@ from tile_images import *
 import random
 from PIL import Image
 
-def level_to_image(level):
+def level_to_image(level, name):
 	width, height = 0, 0
 	xs = [x for (x,y) in level]
 	ys = [y for (x,y) in level]
@@ -16,7 +16,6 @@ def level_to_image(level):
 	level_img = Image.new('RGB',((width+1)*(16*16), (height+1)*15*16))
 	for (x,y) in level:
 		lev, game = level[(x,y)][0], level[(x,y)][1]
-		#print('\n'.join(lev), game)
 		if game == 'smb':
 			images = smb_images
 		elif game == 'mm':
@@ -29,7 +28,7 @@ def level_to_image(level):
 				img.paste(images[tile],(col*16,row*16))
 		y_adj = y+abs(min_y)
 		level_img.paste(img,(x*256,y_adj*240))
-	level_img.save('blend level.png')
+	level_img.save(name + '.png')
 
 class MarioBlendSegmentNode(py_trees.behaviour.Behaviour):
 	def __init__(self,name,pattern):
@@ -173,7 +172,7 @@ def create_root():
 	root.add_child(met)
 	return root
 
-def generate(h_prob=0.5, up_prob=0.5):
+def generate(h_prob=0.5, up_prob=0.5, name='blend_level'):
 	root = create_root()
 	bt = py_trees.trees.BehaviourTree(root)
 	bbl = py_trees.blackboard.Client()
@@ -189,8 +188,8 @@ def generate(h_prob=0.5, up_prob=0.5):
 	bbl.prev, bbl.dr = None, None
 	bbl.level = {}
 	root.tick_once()
-	level_to_image(bbl.level)
-	py_trees.display.render_dot_tree(root)
+	level_to_image(bbl.level, name)
+	py_trees.display.render_dot_tree(root, name=name + '_tree')
 
 if __name__ == '__main__':
 	generate()

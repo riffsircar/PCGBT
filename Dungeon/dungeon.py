@@ -11,9 +11,6 @@ from tile_images import *
 CLOSED, OPEN, DOOR = 'closed','open', 'door'
 NORTH, SOUTH, EAST, WEST = 'north','south','east','west'
 DIRS = [NORTH, SOUTH, EAST, WEST]
-N = 5
-GAME = 'zelda' # zelda, met
-
 
 def neighbor(cell, dr):
 	if dr == NORTH:
@@ -70,13 +67,11 @@ class PlaceRoom(py_trees.behaviour.Behaviour):
 		for cell in cells:
 			for dr in DIRS:
 				nbr = neighbor(cell, dr)
-				print(cell)
 				if self.blackboard.layout[cell][dr] == CLOSED:
 					if nbr not in self.blackboard.layout:
 						options.append((cell,dr))
 		self.blackboard.cell, self.blackboard.dr = random.choice(options)
 		self.blackboard.generated += 1
-		print('incremented generated', self.blackboard.generated)
 		return py_trees.common.Status.SUCCESS
 
 class ConnectRoom(py_trees.behaviour.Behaviour):
@@ -106,16 +101,12 @@ class CheckNumRooms(py_trees.behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='n',access=py_trees.common.Access.READ)
+		self.blackboard.register_key(key='num_rooms',access=py_trees.common.Access.READ)
 		self.blackboard.register_key(key='generated',access=py_trees.common.Access.READ)
 		
 	def update(self):
-		print('Generated: ', self.blackboard.generated)
-		print('N: ', self.blackboard.n)
-		if self.blackboard.generated < self.blackboard.n:
-			print('generating more')
+		if self.blackboard.generated < self.blackboard.num_rooms:
 			return py_trees.common.Status.FAILURE
-		print('stopping generation')
 		return py_trees.common.Status.SUCCESS
 
 class CheckStart(py_trees.behaviour.Behaviour):
@@ -133,11 +124,10 @@ class SetNumRooms(py_trees.behaviour.Behaviour):
 	def __init__(self,name):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
-		self.blackboard.register_key(key='n',access=py_trees.common.Access.WRITE)
+		self.blackboard.register_key(key='num_rooms',access=py_trees.common.Access.WRITE)
 		
 	def update(self):
-		self.blackboard.n = random.randint(5,10)
-		print('N: ', self.blackboard.n)
+		self.blackboard.num_rooms = random.randint(5,10)
 		return py_trees.common.Status.SUCCESS
 		
 def generate_more():
@@ -174,37 +164,36 @@ def generate_room():
 
 def generate_rooms():
 	root = py_trees.composites.Sequence('Generate Rooms')
-	#n = SetNumRooms('Set Num Rooms')
-	#bb.register_key(key='n',access=py_trees.common.Access.READ)
-	for _ in range(N):
+	bb = py_trees.blackboard.Client()
+	bb.register_key(key='num_rooms',access=py_trees.common.Access.READ)
+	for _ in range(bb.num_rooms):
 		pr = PlaceRoom('Place Room')
 		cr = ConnectRoom('Connect Room')
 		root.add_child(pr)
 		root.add_child(cr)
 	return root
 
-def generate(game='zelda', num_rooms=10):
+def generate(game='zelda', num_rooms=10, name='level'):
 	root = py_trees.composites.Sequence('Dungeon')
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='cell',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='dr',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='layout',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='generated',access=py_trees.common.Access.WRITE)
-	blackboard.register_key(key='n',access=py_trees.common.Access.WRITE)
+	blackboard.register_key(key='num_rooms',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='started',access=py_trees.common.Access.WRITE)
 	blackboard.started = False
 	blackboard.generated = 0
-	blackboard.n = num_rooms
+	blackboard.num_rooms = num_rooms
 	blackboard.cell = (0,0)
 	blackboard.layout = {}
 	start = is_start()
 	more = generate_more()
-	#dung = generate_dungeon()
 	root.add_child(start)
 	root.add_child(more)
-	py_trees.display.render_dot_tree(root)
-	while blackboard.generated < blackboard.n:
-		print('Generated ',blackboard.generated)
+	py_trees.display.render_dot_tree(root, name=name + '_tree')
+	while blackboard.generated < blackboard.num_rooms:
+		print('Generated: ', blackboard.generated)
 		root.tick_once()
 	dims = (15,16) if game == 'met' else (11,16)
 	cells = list(blackboard.layout.keys())
@@ -269,8 +258,8 @@ def generate(game='zelda', num_rooms=10):
 				line += '┘'
 		print(line)
 	layout = blackboard.layout
-	sample = sample_met if game == 'metroid' else sample_dir
-	images = met_images if game == 'metroid' else zelda_images
+	sample = sample_met if game == 'met' else sample_dir
+	images = met_images if game == 'met' else zelda_images
 	for key in layout:
 		x, y = key
 		cell = layout[key]
@@ -291,7 +280,7 @@ def generate(game='zelda', num_rooms=10):
 				img.paste(images[tile],(col*16,row*16))
 		x_pos, y_pos, x_del, y_del = (x*256)+x_adj, (y*dims[0]*16)+y_adj, 16*16, dims[0]*16
 		layout_img.paste(img, (x_pos,y_pos))
-		layout_img.save('dung_met.png')
+		layout_img.save(name + '.png')
 
 if __name__=='__main__':
 	generate()

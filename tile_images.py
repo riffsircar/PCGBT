@@ -4,27 +4,27 @@ import os, sys
 path = os.path.abspath(os.path.dirname(__file__)) + '/'
 
 smb_images = {
-    # TODO: Get T, D, M tiles from Icarus
-    "E": Image.open(path + 'tiles/E.png'),
-    "H": Image.open(path + 'tiles/H.png'),
-    "G": Image.open(path + 'tiles/G.png'),
-    "M": Image.open(path + 'tiles/M.png'),
-    "o": Image.open(path + 'tiles/o.png'),
-    "S": Image.open(path + 'tiles/S.png'),
-    "T": Image.open(path + 'tiles/T.png'),
-    "?": Image.open(path + 'tiles/Q.png'),
-    "Q": Image.open(path + 'tiles/Q.png'),
-    "X": Image.open(path + 'tiles/X1.png'),
-    "#": Image.open(path + 'tiles/X.png'),
-    "-": Image.open(path + 'tiles/-.png'),
-    "0": Image.open(path + 'tiles/0.png'),
-    "D": Image.open(path + 'tiles/D.png'),
-    "<": Image.open(path + 'tiles/PTL.png'),
-    ">": Image.open(path + 'tiles/PTR.png'),
-    "[": Image.open(path + 'tiles/[.png'),
-    "]": Image.open(path + 'tiles/].png'),
-    "*": Image.open(path + 'tiles/-.png'),
-    "P": Image.open(path + 'tiles/P.png'),
+	# TODO: Get T, D, M tiles from Icarus
+	"E": Image.open(path + 'tiles/E.png'),
+	"H": Image.open(path + 'tiles/H.png'),
+	"G": Image.open(path + 'tiles/G.png'),
+	"M": Image.open(path + 'tiles/M.png'),
+	"o": Image.open(path + 'tiles/o.png'),
+	"S": Image.open(path + 'tiles/S.png'),
+	"T": Image.open(path + 'tiles/T.png'),
+	"?": Image.open(path + 'tiles/Q.png'),
+	"Q": Image.open(path + 'tiles/Q.png'),
+	"X": Image.open(path + 'tiles/X1.png'),
+	"#": Image.open(path + 'tiles/X.png'),
+	"-": Image.open(path + 'tiles/-.png'),
+	"0": Image.open(path + 'tiles/0.png'),
+	"D": Image.open(path + 'tiles/D.png'),
+	"<": Image.open(path + 'tiles/PTL.png'),
+	">": Image.open(path + 'tiles/PTR.png'),
+	"[": Image.open(path + 'tiles/[.png'),
+	"]": Image.open(path + 'tiles/].png'),
+	"*": Image.open(path + 'tiles/-.png'),
+	"P": Image.open(path + 'tiles/P.png'),
 	"B": Image.open(path + 'tiles/B.png'),
 	"b": Image.open(path + 'tiles/bb.png')
 }
@@ -62,17 +62,38 @@ zelda_images = {
 }
 
 met_images = {
-    "#":Image.open(path + 'tiles/Met_X.png'),  # solid
-    "(":Image.open(path + 'tiles/0.png'),  # beam around door (ignore using background)
-    ")":Image.open(path + 'tiles/0.png'),  # beam around door (ignore using background)
-    "+":Image.open(path + 'tiles/Met_+.png'),  # powerup
-    "-":Image.open(path + 'tiles/0.png'),   # background
-    "B":Image.open(path + 'tiles/Met_B.png'),  # breakable
-    "D":Image.open(path + 'tiles/Met_D.png'),  # door
-    "E":Image.open(path + 'tiles/Met_E.png'),  # enemy
-    "P":Image.open(path + 'tiles/0.png'),   # path
-    "[":Image.open(path + 'tiles/Met_[.png'),  # ??
-    "]":Image.open(path + 'tiles/Met_].png'),  # ??
-    "^":Image.open(path + 'tiles/Met_^2.png'),  # lava
-    "v":Image.open(path + 'tiles/0.png')  # ??
+	"#":Image.open(path + 'tiles/Met_X.png'),  # solid
+	"(":Image.open(path + 'tiles/0.png'),  # beam around door (ignore using background)
+	")":Image.open(path + 'tiles/0.png'),  # beam around door (ignore using background)
+	"+":Image.open(path + 'tiles/Met_+.png'),  # powerup
+	"-":Image.open(path + 'tiles/0.png'),   # background
+	"B":Image.open(path + 'tiles/Met_B.png'),  # breakable
+	"D":Image.open(path + 'tiles/Met_D.png'),  # door
+	"E":Image.open(path + 'tiles/Met_E.png'),  # enemy
+	"P":Image.open(path + 'tiles/0.png'),   # path
+	"[":Image.open(path + 'tiles/Met_[.png'),  # ??
+	"]":Image.open(path + 'tiles/Met_].png'),  # ??
+	"^":Image.open(path + 'tiles/Met_^2.png'),  # lava
+	"v":Image.open(path + 'tiles/0.png')  # ??
 }
+
+game_images = {'smb':smb_images, 'mm': mm_images, 'met': met_images, 'zelda': zelda_images}
+
+def level_to_image(level, name, game):
+	images = game_images[game]
+	width, height = 0, 0
+	xs = [x for (x,y) in level]
+	ys = [y for (x,y) in level]
+	min_y = min(ys)
+	ys_adj = [y+abs(min_y) for y in ys]
+	width, height = max(xs), max(ys_adj)
+	level_img = Image.new('RGB',((width+1)*(16*16), (height+1)*15*16))
+	for x,y in level:
+		lev = level[(x,y)]
+		img = Image.new('RGB',(16*16,15*16))
+		for row, seq in enumerate(lev):
+			for col, tile in enumerate(seq):
+				img.paste(images[tile],(col*16,row*16))
+		y_adj = y+abs(min_y)
+		level_img.paste(img,(x*256,y_adj*240))
+	level_img.save(name + '.png')

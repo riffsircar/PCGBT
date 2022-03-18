@@ -4,7 +4,6 @@ import py_trees
 from smb_library import *
 from tile_images import *
 import random
-from PIL import Image
 
 dp = {
 	'E': ['E1','E2','E3','E4','R','GE','RR'],
@@ -15,21 +14,6 @@ dp = {
 	'|': ['VP','GP'],
 	'I': ['I']
 }
-
-def level_to_image(level):
-	width, height = 0, 0
-	xs = [x for (x,y) in level]
-	ys = [y for (x,y) in level]
-	width, height = max(xs), max(ys)
-	level_img = Image.new('RGB',((width+1)*(16*16), 15*16))
-	for x,y in level:
-		lev = level[(x,y)]
-		img = Image.new('RGB',(16*16,15*16))
-		for row, seq in enumerate(lev):
-			for col, tile in enumerate(seq):
-				img.paste(smb_images[tile],(col*16,row*16))
-		level_img.paste(img,(x*256,y*240))
-	level_img.save('test.png')
 
 def sample_pattern(p):
 	levels = []

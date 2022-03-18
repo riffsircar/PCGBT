@@ -6,7 +6,6 @@ from mm_library import *
 from mm_helper import *
 
 def upward_section():
-	print('Inside upward section')
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
 	root = py_trees.composites.Sequence('Upward')
@@ -19,7 +18,6 @@ def upward_section():
 	return root
 
 def downward_section():
-	print('Inside downward section')
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
 	root = py_trees.composites.Sequence('Downward')
@@ -32,7 +30,6 @@ def downward_section():
 	return root
 
 def select_ud():
-	print('in ud')
 	root = py_trees.composites.Selector('Vertical')
 	check = py_trees.composites.Sequence('Check')
 	do_up = MegaManCheckNode('Do Upward?', 'up_prob')
@@ -45,7 +42,6 @@ def select_ud():
 	return root
 
 def select_hv():
-	print('in hv')
 	root = py_trees.composites.Selector('Horizontal or Vertical')
 	check = py_trees.composites.Sequence('Check')
 	do_h = MegaManCheckNode('Do Horizontal?', 'h_prob')
@@ -74,7 +70,7 @@ def create_root_generator():
 	return root
 
 
-def generate(h_prob=0.5, up_prob=0.5):
+def generate(h_prob=0.5, up_prob=0.5, name='mm_level'):
 	root = create_root_generator()
 	bt = py_trees.trees.BehaviourTree(root)
 	blackboard = py_trees.blackboard.Client()
@@ -92,8 +88,8 @@ def generate(h_prob=0.5, up_prob=0.5):
 	blackboard.dir = 'LR'
 	blackboard.level = {}
 	root.tick_once()
-	level_to_image(blackboard.level)
-	py_trees.display.render_dot_tree(root)
+	level_to_image(blackboard.level, name, 'mm')
+	py_trees.display.render_dot_tree(root, name=name + '_tree')
 
 if __name__ == '__main__':
 	generate()
