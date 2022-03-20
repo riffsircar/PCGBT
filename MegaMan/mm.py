@@ -53,7 +53,7 @@ def select_hv():
 	root.add_child(ud)
 	return root
 
-def create_root_generator():
+def create_generator_root():
 	root = py_trees.composites.Sequence('MM Level')
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='num_nodes',access=py_trees.common.Access.WRITE)
@@ -71,7 +71,7 @@ def create_root_generator():
 
 
 def generate(h_prob=0.5, up_prob=0.5, name='mm_level'):
-	root = create_root_generator()
+	root = create_generator_root()
 	bt = py_trees.trees.BehaviourTree(root)
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)

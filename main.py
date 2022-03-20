@@ -14,6 +14,10 @@ parser.add_argument('--hp', type=float, default=0.5, help='horizontal probabilit
 parser.add_argument('--up', type=float, default=0.5, help='vertical probability (default: 0.5)')
 parser.add_argument('--name', type=str, default='', help='output file name')
 parser.add_argument('--gen', type=str, choices=['met','mm'], default='met', help='game for generic BT (default: met)')
+parser.add_argument('--hsize', type=int, default=3, help='size of horizontal sections in generic')
+parser.add_argument('--mmsize', type=int, default=3, help='size of horizontal MM section in blend')
+parser.add_argument('--metsize', type=int, default=3, help='size of horizontal Metroid section in blend')
+
 args = parser.parse_args()
 path_pipe_prob, gaps_valleys_prob, num_rooms, horizontal_prob, up_prob = args.pp, args.gv, args.num, args.hp, args.up
 
@@ -29,6 +33,6 @@ elif game == 'met':
 elif game == 'zelda':
     dungeon.generate('zelda', num_rooms, args.name)
 elif game == 'blend':
-    blend.generate(horizontal_prob, up_prob, args.name)
+    blend.generate(horizontal_prob, up_prob, args.mmsize, args.metsize, args.name)
 elif game == 'generic':
-    generic.generate(horizontal_prob, up_prob, args.gen, args.name)
+    generic.generate(args.gen, horizontal_prob, up_prob, args.hsize, args.name)

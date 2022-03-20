@@ -3,7 +3,6 @@ from Mario import smb_helper
 from MegaMan import mm_helper
 from Metroid import met_helper
 from tile_images import *
-import random
 from PIL import Image
 
 def level_to_image(level, name):
@@ -132,11 +131,11 @@ def select_ud():
 	root.add_child(d)
 	return root
 
-def create_mm():
+def create_mm(horizontal_size):
 	root = py_trees.composites.Selector('Mega Man')
 	check = py_trees.composites.Sequence('Check')
 	do_h = mm_helper.MegaManCheckNode('Do Horizontal?','h_prob')
-	h = HorizontalSection('Horizontal','mm',random.randint(2,4))
+	h = HorizontalSection('Horizontal','mm',horizontal_size)
 	down = downward_section('mm')
 	check.add_child(do_h)
 	check.add_child(h)
@@ -144,9 +143,9 @@ def create_mm():
 	root.add_child(down)
 	return root
 
-def create_met():
+def create_met(horizontal_size):
 	root = py_trees.composites.Sequence('Metroid')
-	h = HorizontalSection('Horizontal','met',random.randint(2,4))
+	h = HorizontalSection('Horizontal','met',horizontal_size)
 	u = upward_section('met')
 	root.add_child(h)
 	root.add_child(u)
@@ -162,18 +161,18 @@ def create_mario():
 	root.add_child(stairs)
 	return root
 
-def create_root():
+def create_generator_root(mm_h_size, met_h_size):
 	root = py_trees.composites.Sequence('Blend')
 	mario = create_mario()
-	mm = create_mm()
-	met = create_met()
+	mm = create_mm(mm_h_size)
+	met = create_met(met_h_size)
 	root.add_child(mario)
 	root.add_child(mm)
 	root.add_child(met)
 	return root
 
-def generate(h_prob=0.5, up_prob=0.5, name='blend_level'):
-	root = create_root()
+def generate(h_prob=0.5, up_prob=0.5, mm_h_size=3, met_h_size=3, name='blend_level'):
+	root = create_generator_root(mm_h_size, met_h_size)
 	bt = py_trees.trees.BehaviourTree(root)
 	bbl = py_trees.blackboard.Client()
 	bbl.register_key(key='x',access=py_trees.common.Access.WRITE)

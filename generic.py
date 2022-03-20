@@ -110,11 +110,11 @@ def select_ud():
 	root.add_child(d)
 	return root
 
-def select_hv():
+def select_hv(h_size):
 	root = py_trees.composites.Selector('Horizontal or Vertical')
 	check = py_trees.composites.Sequence('Check')
 	do_h = CheckNode('Do Horizontal','h_prob')
-	h = GenericSection('Horizontal', 'LR',random.randint(2,4))
+	h = GenericSection('Horizontal', 'LR', h_size)
 	ud = select_ud()
 	check.add_child(do_h)
 	check.add_child(h)
@@ -122,18 +122,18 @@ def select_hv():
 	root.add_child(ud)
 	return root
 
-def create_root_generator():
+def create_generator_root(h_size):
 	root = py_trees.composites.Sequence('Generic Level')
-	hv = select_hv()
-	h2 = GenericSection('Horizontal','LR',random.randint(2,4))
+	hv = select_hv(h_size)
+	h2 = GenericSection('Horizontal','LR', h_size)
 	ud = select_ud()  # can fail
 	root.add_child(hv)
 	root.add_child(h2)
 	root.add_child(ud)
 	return root
 
-def generate(h_prob=0.5, up_prob=0.5, game='met', name='generic_level'):
-	root = create_root_generator()
+def generate(game='met', h_prob=0.5, up_prob=0.5, h_size=3, name='generic_level'):
+	root = create_generator_root(h_size)
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
 	blackboard.register_key(key='y',access=py_trees.common.Access.WRITE)

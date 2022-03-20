@@ -121,13 +121,14 @@ class CheckStart(py_trees.behaviour.Behaviour):
 		return py_trees.common.Status.FAILURE
 
 class SetNumRooms(py_trees.behaviour.Behaviour):
-	def __init__(self,name):
+	def __init__(self,name,num_rooms):
 		super().__init__(name=name)
 		self.blackboard = self.attach_blackboard_client(name=name)
 		self.blackboard.register_key(key='num_rooms',access=py_trees.common.Access.WRITE)
+		self.num_rooms = num_rooms
 		
 	def update(self):
-		self.blackboard.num_rooms = random.randint(5,10)
+		self.blackboard.num_rooms = self.num_rooms
 		return py_trees.common.Status.SUCCESS
 		
 def generate_more():
@@ -146,9 +147,9 @@ def is_start():
 	root.add_child(start)
 	return root
 
-def generate_dungeon():
+def generate_dungeon(num_rooms):
 	root = py_trees.composites.Sequence('Generate Dungeon')
-	n = SetNumRooms('Set Num Rooms')
+	n = SetNumRooms('Set Num Rooms',num_rooms)
 	gr = generate_rooms()
 	root.add_child(n)
 	root.add_child(gr)
