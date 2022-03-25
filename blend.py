@@ -96,7 +96,12 @@ class BlendSegmentNode(py_trees.behaviour.Behaviour):
 		self.blackboard.prev = level
 		self.blackboard.dr = self.dir
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = [level, self.game]
-		self.blackboard.y -= 1
+		if self.dir in ['LR','DR']:
+			self.blackboard.x += 1
+		elif self.dir in ['UD_U','UL','UR']:
+			self.blackboard.y -= 1
+		elif self.dir in ['UD_D','DL']:
+			self.blackboard.y += 1
 		return py_trees.common.Status.SUCCESS
 
 def upward_section(game):

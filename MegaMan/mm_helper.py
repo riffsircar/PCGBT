@@ -23,7 +23,7 @@ def sample_dir(this_dr, prev_lev, prev_dr):
 
 	prev_t = [''.join(s) for s in zip(*prev_lev)]
 	prev_up, prev_down = prev_lev[0], prev_lev[len(prev_lev)-1]
-	prev_left, prev_right = prev_t[0], prev_t[len(prev_t)-1]
+	_, prev_right = prev_t[0], prev_t[len(prev_t)-1]
 
 	tries = 0
 	while tries < 1000:
@@ -32,20 +32,10 @@ def sample_dir(this_dr, prev_lev, prev_dr):
 		level_t = [''.join(s) for s in zip(*level)]
 		this_up, this_down = level[0], level[len(level)-1]
 		this_left, this_right = level_t[0], level_t[len(prev_t)-1]
-		#print('this_dr: ', dr, '\tprev_dr: ',prev_dr)
-		# print('\nprev level:')
-		# print('\n'.join(prev_lev))
-		# print('level:')
-		# print('\n'.join(level))
 		if prev_dr in ['LR','UR','DR']:
 			if compare(prev_right,this_left):
 				break
 		elif prev_dr in ['UL','UD_U']:
-			# print('prev:')
-			# print('\n'.join(prev_lev),'\n')
-			# print('this:')
-			# print('\n'.join(level),'\n\n')
-			# print(this_dr, prev_dr)
 			if compare(prev_up,this_down,True):
 				break
 		elif prev_dr in ['DL','UD_D']:
@@ -75,11 +65,11 @@ class MegaManSegmentNode(behaviour.Behaviour):
 		self.blackboard.prev = level
 		self.blackboard.dir = self.dir
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		if self.dir == 'LR':
+		if self.dir in ['LR','DR']:
 			self.blackboard.x += 1
-		elif self.dir == 'UD_U':
+		elif self.dir in ['UD_U','UL']:
 			self.blackboard.y -= 1
-		elif self.dir == 'UD_D':
+		elif self.dir in ['UD_D','DL']:
 			self.blackboard.y += 1
 		return common.Status.SUCCESS
 
@@ -120,10 +110,10 @@ class MegaManSection(behaviour.Behaviour):
 			self.blackboard.prev = level
 			self.blackboard.dir = self.dir
 			self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-			if self.dir == 'LR':
+			if self.dir in ['LR','DR']:
 				self.blackboard.x += 1
-			elif self.dir == 'UD_U':
+			elif self.dir in ['UD_U','UL']:
 				self.blackboard.y -= 1
-			elif self.dir == 'UD_D':
+			elif self.dir in ['UD_D','DL']:
 				self.blackboard.y += 1
 		return common.Status.SUCCESS

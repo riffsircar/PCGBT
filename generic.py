@@ -42,11 +42,11 @@ class GenericSection(py_trees.behaviour.Behaviour):
 			self.blackboard.prev = level
 			self.blackboard.dr = self.dir
 			self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-			if self.dir == 'LR':
+			if self.dir in ['LR','DR']:
 				self.blackboard.x += 1
-			elif self.dir == 'UD_U':
+			elif self.dir in ['UD_U','UL','UR']:
 				self.blackboard.y -= 1
-			elif self.dir == 'UD_D':
+			elif self.dir in ['UD_D','DL']:
 				self.blackboard.y += 1
 		return py_trees.common.Status.SUCCESS
 
@@ -72,9 +72,9 @@ class GenericSegmentNode(py_trees.behaviour.Behaviour):
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		if self.dir in ['LR','DR']:
 			self.blackboard.x += 1
-		elif self.dir in ['UL','UD_U','UD_D','UR']:
+		elif self.dir in ['UL','UD_U','UR']:
 			self.blackboard.y -= 1
-		elif self.dir in ['DL']:
+		elif self.dir in ['DL','UD_D']:
 			self.blackboard.y += 1
 		return py_trees.common.Status.SUCCESS
 
@@ -126,7 +126,7 @@ def create_generator_root(h_size):
 	root = py_trees.composites.Sequence('Generic Level')
 	hv = select_hv(h_size)
 	h2 = GenericSection('Horizontal','LR', h_size)
-	ud = select_ud()  # can fail
+	ud = select_ud()
 	root.add_child(hv)
 	root.add_child(h2)
 	root.add_child(ud)
