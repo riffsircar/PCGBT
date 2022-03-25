@@ -6,5 +6,6 @@ test*
 outputs/
 *.dot
 *.png
+*.txt
 .vscode/
 py_trees_full/
