@@ -41,7 +41,6 @@ def sample_dir(this_dr, prev_lev, prev_dr):
 			if compare(prev_down,this_up,True):
 				break
 		levels.remove(idx)
-		print(len(levels))
 	if len(levels) <= 0:
 		print('No valid level with required directionality found!')
 		return None
