@@ -25,8 +25,7 @@ def sample_dir(this_dr, prev_lev, prev_dr):
 	prev_up, prev_down = prev_lev[0], prev_lev[len(prev_lev)-1]
 	_, prev_right = prev_t[0], prev_t[len(prev_t)-1]
 
-	tries = 0
-	while tries < 1000:
+	while len(levels) > 0:
 		idx = random.choice(levels)
 		level = chunks[idx]
 		level_t = [''.join(s) for s in zip(*level)]
@@ -41,8 +40,10 @@ def sample_dir(this_dr, prev_lev, prev_dr):
 		elif prev_dr in ['DL','UD_D']:
 			if compare(prev_down,this_up,True):
 				break
-		tries += 1
-	if tries >= 1000:
+		levels.remove(idx)
+		print(len(levels))
+	if len(levels) <= 0:
+		print('No valid level with required directionality found!')
 		return None
 	return chunks[idx]
 
@@ -67,7 +68,7 @@ class MegaManSegmentNode(behaviour.Behaviour):
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 		if self.dir in ['LR','DR']:
 			self.blackboard.x += 1
-		elif self.dir in ['UD_U','UL']:
+		elif self.dir in ['UD_U','UL', 'UR']:
 			self.blackboard.y -= 1
 		elif self.dir in ['UD_D','DL']:
 			self.blackboard.y += 1
@@ -112,7 +113,7 @@ class MegaManSection(behaviour.Behaviour):
 			self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
 			if self.dir in ['LR','DR']:
 				self.blackboard.x += 1
-			elif self.dir in ['UD_U','UL']:
+			elif self.dir in ['UD_U','UL','UR']:
 				self.blackboard.y -= 1
 			elif self.dir in ['UD_D','DL']:
 				self.blackboard.y += 1
