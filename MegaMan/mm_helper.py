@@ -117,3 +117,26 @@ class MegaManSection(behaviour.Behaviour):
 			elif self.dir in ['UD_D','DL']:
 				self.blackboard.y += 1
 		return common.Status.SUCCESS
+
+class CheckStart(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name=name)
+		self.blackboard.register_key(key='started',access=common.Access.READ)
+		
+	def update(self):
+		if self.blackboard.started:
+			return common.Status.SUCCESS
+		return common.Status.FAILURE
+
+class CheckNumSegments(behaviour.Behaviour):
+	def __init__(self,name):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name=name)
+		self.blackboard.register_key(key='num_segments',access=common.Access.READ)
+		self.blackboard.register_key(key='generated',access=common.Access.READ)
+		
+	def update(self):
+		if self.blackboard.generated < self.blackboard.num_segments:
+			return common.Status.FAILURE
+		return common.Status.SUCCESS
