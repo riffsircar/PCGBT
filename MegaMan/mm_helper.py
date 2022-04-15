@@ -74,6 +74,48 @@ class MegaManSegmentNode(behaviour.Behaviour):
 		return common.Status.SUCCESS
 
 
+class GenerateSegment(behaviour.Behaviour):
+	def __init__(self,name,prev_dir):
+		super().__init__(name=name)
+		self.blackboard = self.attach_blackboard_client(name=name)
+		self.blackboard.register_key(key='x',access=common.Access.WRITE)
+		self.blackboard.register_key(key='y',access=common.Access.WRITE)
+		self.blackboard.register_key(key='level',access=common.Access.WRITE)
+		self.blackboard.register_key(key='prev',access=common.Access.WRITE)
+		self.blackboard.register_key(key='dir',access=common.Access.WRITE)
+		self.blackboard.register_key(key='generated',access=common.Access.WRITE)
+		self.prev_dir = prev_dir
+		self.this_dir = None
+	
+	def update(self):
+		if self.prev_dir == 'LR':
+			self.this_dir = random.choice(['LR','UL','DL'])
+		elif self.prev_dir in ['DR','UR']:
+			self.this_dir == 'LR'
+		elif self.prev_dir == 'UD_U':
+			self.this_dir = random.choice(['UD_U','UR','DL'])
+		elif self.prev_dir == 'UD_D':
+			self.this_dir = random.choice(['UD_D','DR'])
+		elif self.prev_dir == 'UL':
+			self.this_dir == 'UD_U'
+		elif self.prev_dir == 'DL':
+			self.this_dir == 'UD_D'
+		level = sample_dir(self.this_dir[:2],self.blackboard.prev,self.prev_dir)
+		if level is None:
+			print("Sampling failed!!")
+			return common.Status.FAILURE
+		self.blackboard.prev = level
+		self.blackboard.dir = self.this_dir
+		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
+		if self.this_dir in ['LR','DR']:
+			self.blackboard.x += 1
+		elif self.this_dir in ['UD_U','UL', 'UR']:
+			self.blackboard.y -= 1
+		elif self.this_dir in ['UD_D','DL']:
+			self.blackboard.y += 1
+		self.blackboard.generated += 1
+		return common.Status.SUCCESS
+
 class MegaManCheckNode(behaviour.Behaviour):
 	def __init__(self,name,node_key):
 		super().__init__(name=name)

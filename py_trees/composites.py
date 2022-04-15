@@ -429,7 +429,7 @@ class Sequence(Composite):
         Yields:
             :class:`~py_trees.behaviour.Behaviour`: a reference to itself or one of its children
         """
-        print('name: ', self.name)
+        # print('name: ', self.name)
         self.logger.debug("%s.tick()" % self.__class__.__name__)
 
         # initialise

@@ -77,58 +77,17 @@ def is_start():
 	root.add_child(start)
 	return root
 
-
-def generate_segment():
-	root = py_trees.composites.Sequence('Generate Segment')
-	blackboard = py_trees.blackboard.Client()
-	blackboard.register_key(key='dir',access=py_trees.common.Access.READ)
-	blackboard.register_key(key='level',access=py_trees.common.Access.READ)
-	blackboard.register_key(key='x',access=py_trees.common.Access.READ)
-	blackboard.register_key(key='y',access=py_trees.common.Access.READ)
-	blackboard.register_key(key='generated',access=py_trees.common.Access.WRITE)
-	this_dir = blackboard.dir
-	return root
-	pr = PlaceRoom('Place Room')
-	cr = ConnectRoom('Connect Room')
-	root.add_child(pr)
-	root.add_child(cr)
-	return root
-
-
 def generate_more():
 	root = py_trees.composites.Selector('Generate More?')
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='dir',access=py_trees.common.Access.READ)
-	blackboard.register_key(key='generated',access=py_trees.common.Access.WRITE)
 	check = CheckNumSegments('CheckNumSegments')
+	segment = GenerateSegment('Generate Segment',blackboard.dir)
 	root.add_child(check)
-	prev_dir = blackboard.dir
-	# (['DR', 'LR', 'L', 'UD', 'U', 'UL', 'DL', 'UR', 'R']
-	# LR -> LR, UL, DL,
-	# DR -> LR
-	# UD_U -> UD_U, UR, 
-	# UD_D -> UD_D, DR
-	if prev_dir == 'LR':
-		this_dir = random.choice(['LR','UL','DL'])
-	elif prev_dir == 'DR':
-		this_dir == 'LR'
-	elif prev_dir == 'UD_U':
-		this_dir = random.choice(['UD_U','UR'])
-	elif prev_dir == 'UD_D':
-		this_dir = random.choice(['UD_D','DR'])
-	elif prev_dir == 'UL':
-		this_dir == 'UD_U'
-	elif prev_dir == 'DL':
-		this_dir == 'UD_D'
-	elif this_dir == 'DR':
-		this_dir == 'LR'
-	elif this_dir == 'UR':
-		this_dir == 'LR'
-	segment = MegaManSegmentNode('Generate Segment',this_dir)
 	root.add_child(segment)
 	return root
 
-def generate_loop(num=10, name='mm_level'):
+def generate_loop(num=10, name='mm_loop'):
 	root = py_trees.composites.Sequence('MM Level')
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='x',access=py_trees.common.Access.WRITE)
@@ -152,10 +111,8 @@ def generate_loop(num=10, name='mm_level'):
 	root.add_child(more)
 	py_trees.display.render_dot_tree(root, name=name + '_tree')
 	while blackboard.generated < blackboard.num_segments:
-		print('Generated: ', blackboard.generated)
 		root.tick_once()
-		blackboard.generated += 1
-
+	level_to_image(blackboard.level, name, 'mm')
 
 def generate(h_prob=0.5, up_prob=0.5, name='mm_level'):
 	root = create_generator_root()
