@@ -72,7 +72,7 @@ def create_generator_root():
 def is_start():
 	root = py_trees.composites.Selector('Started?')
 	check = CheckStart('CheckStart')
-	start = MegaManSegmentNode('Start','LR')
+	start = GenerateSegment('Start')
 	root.add_child(check)
 	root.add_child(start)
 	return root
@@ -82,7 +82,7 @@ def generate_more():
 	blackboard = py_trees.blackboard.Client()
 	blackboard.register_key(key='dir',access=py_trees.common.Access.READ)
 	check = CheckNumSegments('CheckNumSegments')
-	segment = GenerateSegment('Generate Segment',blackboard.dir)
+	segment = GenerateSegment('Generate Segment')
 	root.add_child(check)
 	root.add_child(segment)
 	return root
