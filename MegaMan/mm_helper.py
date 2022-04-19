@@ -91,12 +91,10 @@ class GenerateSegment(behaviour.Behaviour):
 		self.this_dir = None
 	
 	def update(self):
-		if self.blackboard.dir == None:
+		if self.blackboard.dir == None or self.blackboard.dir in ['DR','UR']:
 			self.this_dir = 'LR'
 		elif self.blackboard.dir == 'LR':
 			self.this_dir = random.choice(['LR','UL','DL'])
-		elif self.blackboard.dir in ['DR','UR']:
-			self.this_dir = 'LR'
 		elif self.blackboard.dir == 'UD_U':
 			self.this_dir = random.choice(['UD_U','UR','DL'])
 		elif self.blackboard.dir == 'UD_D':

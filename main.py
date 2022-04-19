@@ -8,7 +8,7 @@ import argparse
 parser = argparse.ArgumentParser(description='PCGBT')
 parser.add_argument('--game', type=str, choices=['smb','mm','met','zelda','blend','generic'], default='smb', help='game (default: smb)')
 
-parser.add_argument('--loop', action='store_true', default=False, help='use looping or non-looping BT for MM')
+parser.add_argument('--loop', action='store_true', default=False, help='use looping or non-looping BT for MM or generic')
 
 parser.add_argument('--pp', type=float, default=0.5, help='paths and pipes probability (default: 0.5)')
 parser.add_argument('--gv', type=float, default=0.5, help='gaps and valleys probability (default: 0.5)')
@@ -46,4 +46,8 @@ elif game == 'zelda':
 elif game == 'blend':
     blend.generate(horizontal_prob, up_prob, args.mmsize, args.metsize, args.name)
 elif game == 'generic':
-    generic.generate(args.gen, horizontal_prob, up_prob, args.hsize, args.name)
+    if args.loop:
+        generic.generate_loop(args.gen, args.num, args.name)
+    else:
+        generic.generate(args.gen, horizontal_prob, up_prob, args.hsize, args.name)
+    #generic.generate(args.gen, horizontal_prob, up_prob, args.hsize, args.name)

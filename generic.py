@@ -93,12 +93,10 @@ class GenerateGenericSegment(py_trees.behaviour.Behaviour):
 		self.this_dir = None
 	
 	def update(self):
-		if self.blackboard.dir == None:
+		if self.blackboard.dir == None or self.blackboard.dir in ['DR','UR']:
 			self.this_dir = 'LR'
 		elif self.blackboard.dir == 'LR':
 			self.this_dir = random.choice(['LR','UL','DL'])
-		elif self.blackboard.dir in ['DR','UR']:
-			self.this_dir = 'LR'
 		elif self.blackboard.dir == 'UD_U':
 			self.this_dir = random.choice(['UD_U','UR','DL'])
 		elif self.blackboard.dir == 'UD_D':
@@ -110,7 +108,7 @@ class GenerateGenericSegment(py_trees.behaviour.Behaviour):
 		sample_dir = mm_helper.sample_dir if self.blackboard.game == 'mm' else met_helper.sample_met
 		level = sample_dir(self.this_dir[:2],self.blackboard.prev,self.blackboard.dir)
 		if level is None:
-			print("Sampling failed!!")
+			print("Sampling failed!!")  # fine for loop since same segment is just resampled
 			return py_trees.common.Status.FAILURE
 		self.blackboard.prev = level
 		self.blackboard.dir = self.this_dir
@@ -250,4 +248,4 @@ def generate(game='met', h_prob=0.5, up_prob=0.5, h_size=3, name='generic_level'
 	py_trees.display.render_dot_tree(root, name=name + '_tree')
 
 if __name__ == "__main__":
-	generate_loop('met')
+	generate_loop('mm')
