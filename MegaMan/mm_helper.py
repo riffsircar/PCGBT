@@ -96,9 +96,9 @@ class GenerateSegment(behaviour.Behaviour):
 		elif self.blackboard.dir == 'LR':
 			self.this_dir = random.choice(['LR','UL','DL'])
 		elif self.blackboard.dir == 'UD_U':
-			self.this_dir = random.choice(['UD_U','UR','DL'])
+			self.this_dir = random.choice(['UD_U','UR','DR'])
 		elif self.blackboard.dir == 'UD_D':
-			self.this_dir = random.choice(['UD_D','DR'])
+			self.this_dir = random.choice(['UD_D','UR'])
 		elif self.blackboard.dir == 'UL':
 			self.this_dir = 'UD_U'
 		elif self.blackboard.dir == 'DL':
@@ -106,14 +106,13 @@ class GenerateSegment(behaviour.Behaviour):
 		
 		level = sample_dir(self.this_dir[:2],self.blackboard.prev,self.blackboard.dir)
 		if level is None:
-			print("Sampling failed!!")
 			return common.Status.FAILURE
 		self.blackboard.prev = level
 		self.blackboard.dir = self.this_dir
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		if self.this_dir in ['LR','DR']:
+		if self.this_dir in ['LR','DR','UR']:
 			self.blackboard.x += 1
-		elif self.this_dir in ['UD_U','UL', 'UR']:
+		elif self.this_dir in ['UD_U','UL']:
 			self.blackboard.y -= 1
 		elif self.this_dir in ['UD_D','DL']:
 			self.blackboard.y += 1

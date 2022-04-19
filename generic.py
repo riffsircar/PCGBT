@@ -98,9 +98,9 @@ class GenerateGenericSegment(py_trees.behaviour.Behaviour):
 		elif self.blackboard.dir == 'LR':
 			self.this_dir = random.choice(['LR','UL','DL'])
 		elif self.blackboard.dir == 'UD_U':
-			self.this_dir = random.choice(['UD_U','UR','DL'])
+			self.this_dir = random.choice(['UD_U','UR','DR'])
 		elif self.blackboard.dir == 'UD_D':
-			self.this_dir = random.choice(['UD_D','DR'])
+			self.this_dir = random.choice(['UD_D','UR'])
 		elif self.blackboard.dir == 'UL':
 			self.this_dir = 'UD_U'
 		elif self.blackboard.dir == 'DL':
@@ -108,14 +108,20 @@ class GenerateGenericSegment(py_trees.behaviour.Behaviour):
 		sample_dir = mm_helper.sample_dir if self.blackboard.game == 'mm' else met_helper.sample_met
 		level = sample_dir(self.this_dir[:2],self.blackboard.prev,self.blackboard.dir)
 		if level is None:
-			print("Sampling failed!!")  # fine for loop since same segment is just resampled
+			# fine for loop since same segment is just resampled on next tick
+			print(self.this_dir)
+			print('NONE\n')
 			return py_trees.common.Status.FAILURE
+			
 		self.blackboard.prev = level
 		self.blackboard.dir = self.this_dir
 		self.blackboard.level[(self.blackboard.x,self.blackboard.y)] = level
-		if self.this_dir in ['LR','DR']:
+		print(self.this_dir, self.blackboard.x, self.blackboard.y)
+		print('\n'.join(level))
+		print('\n')
+		if self.this_dir in ['LR','DR','UR']:
 			self.blackboard.x += 1
-		elif self.this_dir in ['UD_U','UL', 'UR']:
+		elif self.this_dir in ['UD_U','UL']:
 			self.blackboard.y -= 1
 		elif self.this_dir in ['UD_D','DL']:
 			self.blackboard.y += 1
@@ -178,8 +184,6 @@ def is_start():
 
 def generate_more():
 	root = py_trees.composites.Selector('Generate More?')
-	blackboard = py_trees.blackboard.Client()
-	blackboard.register_key(key='dir',access=py_trees.common.Access.READ)
 	check = mm_helper.CheckNumSegments('CheckNumSegments')
 	segment = GenerateGenericSegment('Generate Segment')
 	root.add_child(check)
