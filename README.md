@@ -1,4 +1,4 @@
-# Dungeon and Platformer Blending using CVAEs
+# PCGBT
 
 Code for Procedural Content Generation using Behavior Trees (PCGBT), EXAG 2021
 
